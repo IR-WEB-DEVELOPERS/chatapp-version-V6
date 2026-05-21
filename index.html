@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Primary SEO -->
+    <title>EduChat — Connect & Learn</title>
+    <meta name="description" content="Chat with classmates, share files, and collaborate in real time. EduChat is a secure education-focused messaging app powered by Firebase.">
+    <meta name="keywords" content="EduChat, student chat, classroom messaging, collaborate, IR Connect, education app">
+    <meta name="author" content="IR Connect">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://irconnect.app/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://irconnect.app/">
+    <meta property="og:title" content="EduChat — Connect & Learn">
+    <meta property="og:description" content="Chat with classmates, share files, and collaborate in real time. Secure education-focused messaging.">
+    <meta property="og:image" content="https://irconnect.app/icon-192.png">
+    <meta property="og:image:width" content="192">
+    <meta property="og:image:height" content="192">
+    <meta property="og:site_name" content="EduChat by IR Connect">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="EduChat — Connect & Learn">
+    <meta name="twitter:description" content="Chat with classmates, share files, and collaborate in real time.">
+    <meta name="twitter:image" content="https://irconnect.app/icon-192.png">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="EduChat">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+
+    <!-- Apple PWA Splash Screens -->
+    <link rel="apple-touch-startup-image" href="splash-1284x2778.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)">
+    <link rel="apple-touch-startup-image" href="splash-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)">
+    <link rel="apple-touch-startup-image" href="splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)">
+    <link rel="apple-touch-startup-image" href="splash-1080x1920.png">
+
+    <link rel="stylesheet" href="login.css">
+    <style>
+        #appLoader {
+            text-align: center;
+            color: #718096;
+            font-size: 0.9rem;
+            margin-top: 12px;
+            display: none;
+        }
+        #configError {
+            display: none;
+            margin-top: 12px;
+            padding: 12px;
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-radius: 8px;
+            color: #c53030;
+            font-size: 0.88rem;
+            text-align: center;
+        }
+        #configError button {
+            margin-top: 8px;
+            padding: 6px 16px;
+            background: #c53030;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .google-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <main class="login-container" id="loginMain" style="visibility:hidden">
+        <section class="login-card">
+            <div class="app-logo">
+                <h1>EduChat</h1>
+                <p>Connect with your classmates and friends</p>
+            </div>
+
+            <div class="login-form">
+                <h2>Welcome back</h2>
+                <p class="subtitle">Sign in to continue chatting</p>
+
+                <button id="googleLogin" class="login-btn google-btn" type="button" disabled>
+                    <span>G</span>
+                    Continue with Google
+                </button>
+
+                <div id="appLoader">Loading…</div>
+
+                <div id="configError">
+                    <strong>Could not connect to EduChat.</strong><br>
+                    Check your internet connection and try again.
+                    <br>
+                    <button onclick="window.location.reload()">Retry</button>
+                </div>
+
+                <div class="divider">
+                    <span>Secure login</span>
+                </div>
+
+                <div class="email-option">
+                    Google sign-in is currently enabled for EduChat.
+                </div>
+            </div>
+
+            <div class="login-footer">
+                <p>Your chat data is stored securely with Firebase.</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script>
+        document.getElementById('appLoader').style.display = 'block';
+
+        fetch('/firebase-config')
+            .then(r => {
+                if (!r.ok) throw new Error('Server returned ' + r.status);
+                return r.json();
+            })
+            .then(cfg => {
+                if (!cfg.apiKey || !cfg.projectId) {
+                    throw new Error('Incomplete Firebase config from server');
+                }
+                if (!firebase.apps.length) firebase.initializeApp(cfg);
+                if (!window.db) window.db = firebase.firestore();
+                window._firebaseConfig = cfg;
+
+                const s = document.createElement('script');
+                s.src = 'login.js';
+                s.onload = () => {
+                    document.getElementById('appLoader').style.display = 'none';
+                    document.getElementById('googleLogin').disabled = false;
+                };
+                s.onerror = () => {
+                    document.getElementById('appLoader').style.display = 'none';
+                    document.getElementById('configError').style.display = 'block';
+                };
+                document.body.appendChild(s);
+            })
+            .catch(err => {
+                console.error('Failed to load Firebase config:', err);
+                document.getElementById('appLoader').style.display = 'none';
+                document.getElementById('configError').style.display = 'block';
+            });
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => {
+                        console.log('✅ SW registered:', reg.scope);
+                        setInterval(() => reg.update(), 60 * 1000);
+                    })
+                    .catch(err => console.warn('SW failed:', err));
+
+                navigator.serviceWorker.addEventListener('message', (event) => {
+                    if (event.data?.type === 'SW_UPDATED') {
+                        window.location.reload();
+                    }
+                });
+            });
+        }
+    </script>
+    <script src="totp.js"></script>
+</body>
+</html>

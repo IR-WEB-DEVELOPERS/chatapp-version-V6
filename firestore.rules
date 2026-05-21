@@ -1,0 +1,170 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function isFriendDocParticipant() {
+      return signedIn() &&
+        (request.auth.uid in resource.data.friends ||
+         request.auth.uid in request.resource.data.friends);
+    }
+
+    function onlyFriendOrUnreadFieldsChanged() {
+      return request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(['friends', 'unreadCounts']);
+    }
+
+    function chatParticipantByData(data) {
+      return signedIn() &&
+        (request.auth.uid in data.participants ||
+         request.auth.uid == data.sender ||
+         request.auth.uid == data.to ||
+         request.auth.uid == data.from);
+    }
+
+    function groupMemberById(groupId) {
+      return signedIn() &&
+        exists(/databases/$(database)/documents/groups/$(groupId)) &&
+        request.auth.uid in get(/databases/$(database)/documents/groups/$(groupId)).data.members;
+    }
+
+    match /users/{userId} {
+      allow read: if signedIn();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) ||
+        (isFriendDocParticipant() && onlyFriendOrUnreadFieldsChanged());
+      allow delete: if false;
+    }
+
+    match /friendRequests/{requestId} {
+      allow create: if signedIn() &&
+        request.auth.uid == request.resource.data.from;
+
+      allow read, update: if signedIn() &&
+        (request.auth.uid == resource.data.to ||
+         request.auth.uid == resource.data.from);
+
+      allow delete: if false;
+    }
+
+    match /messages/{messageId} {
+      allow create: if signedIn() &&
+        request.auth.uid == request.resource.data.sender &&
+        request.resource.data.chatId is string &&
+        request.auth.uid in request.resource.data.participants;
+
+      allow read: if signedIn() &&
+        (request.auth.uid in resource.data.participants ||
+         resource.data.chatId.matches('.*' + request.auth.uid + '.*'));
+
+      // Allow updates: delete for me/all, seenBy, pinned
+      allow update: if signedIn() &&
+        (request.auth.uid in resource.data.participants ||
+         resource.data.chatId.matches('.*' + request.auth.uid + '.*'));
+
+      allow delete: if false;
+    }
+
+    match /groups/{groupId} {
+      allow create: if signedIn() &&
+        request.auth.uid in request.resource.data.members &&
+        request.auth.uid == request.resource.data.createdBy;
+
+      allow read, update: if signedIn() &&
+        request.auth.uid in resource.data.members;
+
+      allow delete: if false;
+
+      match /messages/{messageId} {
+        allow create: if signedIn() &&
+          request.auth.uid == request.resource.data.sender &&
+          request.auth.uid in get(/databases/$(database)/documents/groups/$(groupId)).data.members;
+
+        allow read: if signedIn() &&
+          request.auth.uid in get(/databases/$(database)/documents/groups/$(groupId)).data.members;
+
+        allow update, delete: if false;
+      }
+    }
+
+    match /groupMessages/{messageId} {
+      allow create: if signedIn() &&
+        request.auth.uid == request.resource.data.sender &&
+        groupMemberById(request.resource.data.groupId);
+
+      allow read: if groupMemberById(resource.data.groupId);
+
+      // Allow updates: delete, seenBy, pinned
+      allow update: if signedIn() && groupMemberById(resource.data.groupId);
+      allow delete: if false;
+    }
+
+    // Typing indicators
+    match /typing/{chatId} {
+      allow read, write: if signedIn();
+    }
+
+    match /messageArchives/{archiveId} {
+      allow create: if signedIn() &&
+        request.auth.uid == request.resource.data.owner;
+
+      allow read: if signedIn() &&
+        request.auth.uid == resource.data.owner;
+
+      allow delete: if signedIn() &&
+        request.auth.uid == resource.data.owner;
+
+      allow update: if false;
+    }
+
+    match /calls/{callId} {
+      allow create: if signedIn() &&
+        request.auth.uid == request.resource.data.from;
+
+      allow read, update, delete: if signedIn() &&
+        (request.auth.uid == resource.data.from ||
+         request.auth.uid == resource.data.to);
+    }
+
+    // Push notifications — any signed-in user can write to anyone's pending,
+    // but only the owner can read/delete their own notifications
+    match /notifications/{userId} {
+      allow read, write: if signedIn() && request.auth.uid == userId;
+
+      match /pending/{notifId} {
+        allow create: if signedIn(); // anyone logged in can send a notification
+        allow read, delete: if signedIn() && request.auth.uid == userId;
+        allow update: if false;
+      }
+    }
+
+    match /chats/{chatId} {
+      allow create: if signedIn() &&
+        request.auth.uid in request.resource.data.participants;
+
+      allow read, update: if signedIn() &&
+        request.auth.uid in resource.data.participants;
+
+      allow delete: if false;
+
+      match /messages/{messageId} {
+        allow create: if signedIn() &&
+          request.auth.uid == request.resource.data.sender;
+
+        allow read: if signedIn();
+        allow update, delete: if false;
+      }
+    }
+
+    // Private chat passcodes — only the owner can read/write their own passcode
+    match /privatePasscodes/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+  }
+}

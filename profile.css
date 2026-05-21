@@ -1,0 +1,1114 @@
+/* ============================================================
+   PROFILE MODAL + STORIES / STATUS  — EduChat
+   ============================================================ */
+
+/* ── Profile Button in Sidebar Header ── */
+.user-avatar-wrap {
+    cursor: pointer;
+    transition: transform 0.15s;
+}
+.user-avatar-wrap:hover {
+    transform: scale(1.07);
+}
+.user-avatar-wrap::after {
+    content: '✏️';
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    font-size: 0.6rem;
+    background: var(--accent);
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--header-bg);
+    pointer-events: none;
+}
+
+/* ── Profile Modal ── */
+.profile-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(6px);
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: overlayFadeIn 0.2s ease;
+}
+
+@keyframes overlayFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.profile-modal {
+    background: var(--sidebar-bg);
+    border-radius: 20px;
+    width: 420px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.25);
+    animation: modalSlideUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+}
+
+@keyframes modalSlideUp {
+    from { opacity: 0; transform: translateY(40px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Profile Header Banner ── */
+.profile-banner {
+    height: 110px;
+    background: linear-gradient(135deg, var(--accent) 0%, #818cf8 60%, #a78bfa 100%);
+    border-radius: 20px 20px 0 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.07'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+}
+
+.profile-close-btn {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+.profile-close-btn:hover {
+    background: rgba(255,255,255,0.35);
+}
+
+/* ── Avatar Section ── */
+.profile-avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: -44px;
+    padding: 0 24px 0;
+    position: relative;
+    z-index: 2;
+}
+
+.profile-avatar-ring {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-avatar-img {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--sidebar-bg);
+    background: linear-gradient(135deg, var(--accent), #818cf8);
+    display: block;
+    box-shadow: 0 4px 16px rgba(99,102,241,0.3);
+}
+
+.profile-avatar-fallback {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    border: 4px solid var(--sidebar-bg);
+    background: linear-gradient(135deg, var(--accent), #818cf8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    box-shadow: 0 4px 16px rgba(99,102,241,0.3);
+}
+
+.profile-avatar-edit-btn {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background: var(--accent);
+    border: 3px solid var(--sidebar-bg);
+    color: white;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, transform 0.15s;
+    box-shadow: 0 2px 8px rgba(99,102,241,0.4);
+}
+.profile-avatar-edit-btn:hover {
+    background: var(--accent-hover);
+    transform: scale(1.12);
+}
+.profile-avatar-edit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.profile-avatar-upload-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 0 0 50px 50px;
+    overflow: hidden;
+}
+
+.profile-avatar-upload-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    border-radius: 0 0 50px 50px;
+    transition: width 0.2s ease;
+}
+
+/* ── Profile Body ── */
+.profile-body {
+    padding: 16px 24px 24px;
+}
+
+.profile-display-name {
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.profile-display-name h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+}
+
+.profile-username-tag {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: 14px;
+}
+
+/* ── Edit Fields ── */
+.profile-field {
+    margin-bottom: 14px;
+}
+
+.profile-field label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+}
+
+.profile-field-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.profile-input {
+    width: 100%;
+    padding: 10px 42px 10px 14px;
+    background: var(--bg-main);
+    border: 1.5px solid var(--sidebar-border);
+    border-radius: 10px;
+    font-size: 0.93rem;
+    color: var(--text-primary);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    font-family: inherit;
+    resize: none;
+}
+
+.profile-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+}
+
+.profile-input[readonly] {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.profile-field-edit-icon {
+    position: absolute;
+    right: 12px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    pointer-events: none;
+}
+
+.profile-textarea {
+    min-height: 72px;
+    padding-right: 14px;
+}
+
+.profile-char-count {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-align: right;
+    margin-top: 4px;
+}
+.profile-char-count.over {
+    color: var(--red);
+}
+
+/* ── Divider ── */
+.profile-divider {
+    border: none;
+    border-top: 1px solid var(--sidebar-border);
+    margin: 18px 0;
+}
+
+/* ── Save Button ── */
+.profile-save-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.12s, box-shadow 0.15s;
+    box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+    font-family: inherit;
+}
+.profile-save-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(99,102,241,0.35);
+}
+.profile-save-btn:active {
+    transform: translateY(0);
+}
+.profile-save-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.profile-save-btn.saving {
+    position: relative;
+    color: transparent;
+}
+.profile-save-btn.saving::after {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+/* ── Avatar URL modal ── */
+.avatar-url-section {
+    margin-top: 10px;
+}
+.avatar-url-section p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+
+/* ============================================================
+   STORIES / STATUS SYSTEM
+   ============================================================ */
+
+/* ── Stories Bar (below sidebar header search) ── */
+.stories-bar {
+    padding: 12px 16px 10px;
+    border-bottom: 1px solid var(--sidebar-border);
+    flex-shrink: 0;
+}
+
+.stories-bar-label {
+    font-size: 0.73rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.stories-bar-label span:last-child {
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0.75rem;
+    color: var(--accent);
+    cursor: pointer;
+}
+
+.stories-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+}
+.stories-scroll::-webkit-scrollbar { display: none; }
+
+/* ── Story Bubble ── */
+.story-bubble {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    flex-shrink: 0;
+    min-width: 56px;
+}
+
+.story-ring {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    padding: 2.5px;
+    background: conic-gradient(var(--accent) 0%, #818cf8 60%, #a78bfa 100%);
+    position: relative;
+    transition: transform 0.18s;
+}
+.story-ring:hover {
+    transform: scale(1.08);
+}
+
+.story-ring.seen {
+    background: var(--sidebar-border);
+}
+
+.story-ring-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--sidebar-bg);
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.story-ring-inner img,
+.story-ring-inner .story-fallback {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+}
+
+.story-ring-inner .story-fallback {
+    background: linear-gradient(135deg, var(--accent), #818cf8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.story-add-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 18px;
+    height: 18px;
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--sidebar-bg);
+    font-weight: 700;
+    line-height: 1;
+}
+
+.story-name {
+    font-size: 0.68rem;
+    color: var(--text-secondary);
+    text-align: center;
+    max-width: 56px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.story-name.mine {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+/* ── Story Composer Modal ── */
+.story-composer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    z-index: 9100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: overlayFadeIn 0.2s ease;
+}
+
+.story-composer {
+    background: var(--sidebar-bg);
+    border-radius: 20px;
+    width: 400px;
+    max-width: 95vw;
+    padding: 24px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+    animation: modalSlideUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+}
+
+.story-composer h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.story-type-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.story-type-tab {
+    flex: 1;
+    padding: 9px;
+    background: var(--bg-main);
+    border: 1.5px solid var(--sidebar-border);
+    border-radius: 10px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-align: center;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+    font-family: inherit;
+    font-weight: 500;
+}
+.story-type-tab.active {
+    background: var(--accent-light);
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.story-text-input {
+    width: 100%;
+    min-height: 100px;
+    padding: 14px;
+    background: var(--bg-main);
+    border: 1.5px solid var(--sidebar-border);
+    border-radius: 12px;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    resize: none;
+    font-family: inherit;
+    transition: border-color 0.15s;
+    margin-bottom: 10px;
+}
+.story-text-input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.story-image-preview {
+    width: 100%;
+    max-height: 180px;
+    border-radius: 12px;
+    object-fit: cover;
+    margin-top: 10px;
+    display: none;
+}
+
+/* ── File upload label ── */
+.story-file-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 14px;
+    background: var(--bg-main);
+    border: 2px dashed var(--sidebar-border);
+    border-radius: 12px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+.story-file-label:hover {
+    border-color: var(--accent);
+    background: rgba(99,102,241,0.06);
+    color: var(--accent);
+}
+
+/* ── Upload status text ── */
+.story-upload-status {
+    font-size: 0.82rem;
+    padding: 6px 0 2px 2px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.upload-spinner { animation: spin 1s linear infinite; display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+
+.story-composer-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+/* ── Instagram panel in composer ── */
+.story-insta-input {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1.5px solid var(--sidebar-border);
+    background: var(--bg-main);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-family: inherit;
+    box-sizing: border-box;
+    margin-bottom: 12px;
+    outline: none;
+    transition: border-color 0.15s;
+}
+.story-insta-input:focus { border-color: var(--accent); }
+
+.story-insta-preview { min-height: 60px; }
+
+.insta-preview-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--sidebar-bg);
+    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--sidebar-border);
+}
+.insta-preview-thumb {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+.insta-preview-title {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    margin: 0 0 4px;
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.insta-preview-badge {
+    font-size: 0.72rem;
+    background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 20px;
+    flex-shrink: 0;
+}
+.insta-preview-loading { font-size: 0.85rem; color: var(--text-secondary); }
+.insta-preview-error   { font-size: 0.82rem; color: #ef4444; }
+
+/* ── Instagram story viewer ── */
+.story-insta-embed {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    overflow: hidden;
+}
+.story-insta-iframe {
+    width: 100%;
+    max-width: 380px;
+    height: 600px;
+    border: none;
+    border-radius: 12px;
+    background: #000;
+    display: block;
+}
+.story-insta-no-thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+.story-insta-open-btn {
+    background: linear-gradient(135deg, #f09433, #dc2743, #bc1888);
+    color: #fff;
+    padding: 14px 28px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.story-cancel-btn {
+    flex: 1;
+    padding: 11px;
+    background: var(--bg-main);
+    border: 1.5px solid var(--sidebar-border);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-weight: 500;
+    transition: background 0.15s;
+}
+.story-cancel-btn:hover { background: var(--sidebar-border); }
+
+.story-post-btn {
+    flex: 2;
+    padding: 11px;
+    background: var(--accent);
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: white;
+    font-family: inherit;
+    font-weight: 600;
+    transition: background 0.15s, transform 0.12s;
+    box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+}
+.story-post-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+/* ── Story Video Upload ── */
+.story-video-upload-area {
+    border: 2px dashed var(--sidebar-border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+}
+.story-video-upload-area:hover,
+.story-video-upload-area.drag-over {
+    border-color: var(--accent);
+    background: rgba(99,102,241,0.07);
+}
+.story-video-placeholder p {
+    margin: 4px 0 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+.story-video-placeholder small {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+.story-video-preview {
+    border-radius: 8px;
+    max-width: 100%;
+    max-height: 200px;
+}
+.story-video-change-btn {
+    margin-top: 8px;
+    padding: 6px 16px;
+    background: var(--bg-main);
+    border: 1.5px solid var(--sidebar-border);
+    border-radius: 8px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-family: inherit;
+    transition: background 0.15s;
+}
+.story-video-change-btn:hover { background: var(--sidebar-border); }
+
+/* ── Story Caption (shown in viewer) ── */
+.story-caption {
+    position: absolute;
+    bottom: 70px;
+    left: 0;
+    right: 0;
+    padding: 10px 18px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.72));
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-align: center;
+    word-break: break-word;
+    border-radius: 0 0 12px 12px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+}
+
+/* ── Story Viewer ── */
+.story-viewer-overlay {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 9200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: overlayFadeIn 0.2s ease;
+}
+
+.story-viewer {
+    width: 100%;
+    max-width: 420px;
+    height: 100%;
+    max-height: 780px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+/* Progress bars */
+.story-progress-bars {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    right: 14px;
+    display: flex;
+    gap: 4px;
+    z-index: 10;
+}
+
+.story-progress-bar {
+    flex: 1;
+    height: 3px;
+    background: rgba(255,255,255,0.35);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.story-progress-fill {
+    height: 100%;
+    background: white;
+    border-radius: 2px;
+    width: 0%;
+    transition: width linear;
+}
+.story-progress-fill.done { width: 100%; }
+.story-progress-fill.active {
+    animation: storyProgress var(--story-duration, 5s) linear forwards;
+}
+
+@keyframes storyProgress {
+    from { width: 0%; }
+    to   { width: 100%; }
+}
+
+/* Story header */
+.story-viewer-header {
+    position: absolute;
+    top: 28px;
+    left: 14px;
+    right: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 10;
+}
+
+.story-viewer-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.story-viewer-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,0.6);
+}
+
+.story-viewer-avatar-fallback {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #818cf8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    border: 2px solid rgba(255,255,255,0.6);
+}
+
+.story-viewer-name {
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+}
+
+.story-viewer-time {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.72rem;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+.story-viewer-close {
+    background: rgba(0,0,0,0.35);
+    border: none;
+    color: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+.story-viewer-close:hover { background: rgba(0,0,0,0.55); }
+
+/* Story content area */
+.story-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.story-content-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.story-content-text {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 30px;
+    font-size: 1.35rem;
+    font-weight: 500;
+    color: white;
+    text-align: center;
+    line-height: 1.5;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    word-break: break-word;
+    background: linear-gradient(135deg, var(--accent) 0%, #818cf8 60%, #a78bfa 100%);
+}
+
+/* Tap zones (invisible left/right halves for prev/next) */
+.story-tap-prev,
+.story-tap-next {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 40%;
+    z-index: 5;
+    cursor: pointer;
+    background: transparent;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+.story-tap-prev { left: 0; }
+.story-tap-next { right: 0; }
+
+/* Keep old nav buttons hidden (replaced by tap zones) */
+.story-nav-prev,
+.story-nav-next { display: none; }
+
+/* Video wrapper */
+.story-video-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+.story-content-video {
+    max-width: 100%;
+    max-height: 70vh;
+    border-radius: 8px;
+    display: block;
+    margin: auto;
+    background: #000;
+}
+
+
+/* Delete story button */
+.story-delete-btn {
+    position: absolute;
+    bottom: 24px;
+    right: 18px;
+    background: rgba(239,68,68,0.85);
+    border: none;
+    color: white;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    z-index: 10;
+    font-family: inherit;
+    transition: background 0.15s;
+}
+.story-delete-btn:hover { background: rgba(239,68,68,1); }
+
+/* ── Empty stories state ── */
+.stories-empty {
+    text-align: center;
+    padding: 8px 0 4px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* ── Profile QR Section ──────────────────────────────────────── */
+.profile-qr-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0 4px;
+}
+.profile-qr-box {
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.profile-qr-box canvas, .profile-qr-box img {
+    display: block;
+    border-radius: 4px;
+}
+.profile-qr-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.profile-qr-btn {
+    flex: 1;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    background: var(--accent, #6366f1);
+    color: #fff;
+    transition: opacity 0.15s;
+}
+.profile-qr-btn:hover { opacity: 0.85; }
+.profile-qr-copy {
+    background: transparent;
+    border: 1.5px solid var(--accent, #6366f1);
+    color: var(--accent, #6366f1);
+}
+.profile-qr-copy:hover { background: var(--accent-light, rgba(99,102,241,0.1)); opacity: 1; }
+
+/* ── Security section in profile ─────────────────────────── */
+.profile-security-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 4px;
+}
+.security-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border, rgba(255,255,255,0.06));
+    gap: 12px;
+}
+.security-row:last-child { border-bottom: none; }
+.security-row-info { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.security-row-title { font-size: 14px; font-weight: 500; color: var(--text, #f1f5f9); }
+.security-row-desc  { font-size: 12px; color: var(--text-secondary, #94a3b8); }
+.security-toggle-btn {
+    padding: 6px 16px;
+    border-radius: 999px;
+    border: 1.5px solid var(--accent, #6366f1);
+    background: transparent;
+    color: var(--accent, #6366f1);
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    flex-shrink: 0;
+}
+.security-toggle-btn:hover { background: var(--accent-light, rgba(99,102,241,0.12)); }
+.security-toggle-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.security-btn-danger {
+    border-color: #f87171;
+    color: #f87171;
+}
+.security-btn-danger:hover { background: rgba(248,113,113,0.1); }
+.security-btn-neutral {
+    border-color: var(--text-secondary, #94a3b8);
+    color: var(--text-secondary, #94a3b8);
+}

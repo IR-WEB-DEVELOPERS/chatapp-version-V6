@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- interactive-widget=resizes-content: tells Android Chrome to shrink the
+         layout viewport when the OSK opens, so the input bar stays visible.
+         Without this, 100dvh ignores the keyboard on Android Chrome ≥ 108. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+    <title>EduChat</title>
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="EduChat">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="stylesheet" href="chat.css">
+    <link rel="stylesheet" href="themes.css">
+    <link rel="stylesheet" href="emojiPicker.css">
+    <!-- Call Styles -->
+    <link rel="stylesheet" href="call-styles.css">
+    <link rel="stylesheet" href="groupCall.css">
+    <!-- Profile + Stories Styles -->
+    <link rel="stylesheet" href="profile.css">
+    <link rel="stylesheet" href="friendProfile.css">
+    <link rel="stylesheet" href="mediaLightbox.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Sidebar Header -->
+            <div class="sidebar-header">
+                <div class="user-info">
+                    <div class="user-avatar-wrap" id="userAvatarWrap" title="Edit Profile" style="position:relative;cursor:pointer;">
+                        <img id="userAvatar" src="" alt="Avatar" onerror="this.style.display='none'">
+                        <span id="avatarFallback" class="avatar-fallback" data-icon="user"></span>
+                        <span class="online-dot" id="myOnlineDot"></span>
+                    </div>
+                    <div class="user-details">
+                        <h3 id="userName">User</h3>
+                        <span id="userStatus" class="status-online"><span id="onlineDotSvg" class="status-svg-dot"></span> Online</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <div class="sidebar-menu-wrapper">
+                        <button class="three-dot-menu-btn icon-btn" id="sidebarMenuBtn" title="Menu">
+                            <span></span><span></span><span></span>
+                        </button>
+                        <div class="sidebar-dropdown" id="sidebarDropdown">
+                            <button class="sdrop-item" id="sdropProfile">
+                                <span class="sdrop-icon" data-icon="user"></span> My Profile
+                            </button>
+                            <button class="sdrop-item" id="sdropTheme">
+                                <span class="sdrop-icon" id="themeIcon" data-icon="palette"></span>
+                                <span id="themeLabel">Themes</span>
+                            </button>
+                            <button class="sdrop-item" id="sdropPrivate">
+                                <span class="sdrop-icon" data-icon="lock"></span> Private Chats
+                            </button>
+                            <button class="sdrop-item" id="sdropBlocked">
+                                <span class="sdrop-icon" data-icon="block"></span> Blocked Contacts
+                            </button>
+                            <button class="sdrop-item" id="sdropNotifications">
+                                <span class="sdrop-icon" data-icon="bell"></span> Notifications
+                            </button>
+                            <button class="sdrop-item" id="sdropHelp">
+                                <span class="sdrop-icon" data-icon="info"></span> Help &amp; About
+                            </button>
+                            <div class="sdrop-divider"></div>
+                            <button class="sdrop-item" id="sdropShareProfile">
+                                <span class="sdrop-icon" data-icon="share"></span> Share Profile Link
+                            </button>
+                            <button class="sdrop-item" id="sdropScanQR">
+                                <span class="sdrop-icon" data-icon="camera"></span> Scan QR Code
+                            </button>
+                            <button class="sdrop-item sdrop-danger" id="sdropLogout">
+                                <span class="sdrop-icon" data-icon="close"></span> Log Out
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stories / Status Bar -->
+            <div class="stories-bar" id="storiesBar">
+                <div class="stories-bar-label">
+                    <span>Status</span>
+                    <span id="addStatusBtn">+ Add</span>
+                </div>
+                <div class="stories-scroll"></div>
+            </div>
+
+            <!-- Search Section -->
+            <div class="search-section">
+                <div class="search-box">
+                    <span class="search-icon" data-icon="search"></span>
+                    <input type="text" id="searchUser" placeholder="Search users by username...">
+                    <button id="searchBtn" class="search-go-btn">Go</button>
+                </div>
+                <div id="searchedUser" class="search-results"></div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="nav-tabs">
+                <button class="tab-btn active" data-tab="chats">
+                    <span class="tab-icon" data-icon="chat"></span>
+                    <span class="tab-text">Chats</span>
+                    <span id="chatsBadge" class="tab-badge" style="display:none;"></span>
+                </button>
+                <button class="tab-btn" data-tab="friends">
+                    <span class="tab-icon" data-icon="users"></span>
+                    <span class="tab-text">Friends</span>
+                    <span id="friendsBadge" class="tab-badge" style="display:none;"></span>
+                </button>
+                <button class="tab-btn" data-tab="groups">
+                    <span class="tab-icon" data-icon="home"></span>
+                    <span class="tab-text">Groups</span>
+                    <span id="groupsBadge" class="tab-badge" style="display:none;"></span>
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Chats Tab -->
+                <div id="chats-tab" class="tab-pane active">
+                    <div class="tab-section-label">
+                        <span>Recent Conversations</span>
+                        <span id="notifBadge" class="badge" style="display:none;"></span>
+                    </div>
+                    <div id="friendsList" class="chats-list"></div>
+                </div>
+
+                <!-- Friends Tab -->
+                <div id="friends-tab" class="tab-pane">
+                    <div class="tab-section-label">
+                        <span>Requests</span>
+                        <span id="requestsBadge" class="badge">0</span>
+                    </div>
+                    <div id="friendRequests" class="requests-list"></div>
+                    <div class="tab-section-label" style="margin-top:8px;">
+                        <span>All Friends</span>
+                    </div>
+                    <div id="friendsListAll" class="friends-list"></div>
+                </div>
+
+                <!-- Groups Tab -->
+                <div id="groups-tab" class="tab-pane">
+                    <!-- Create Group Card -->
+                    <div class="create-group-card">
+                        <div class="create-group-header" id="toggleCreateGroup">
+                            <div class="create-group-title">
+                                <span class="sdrop-icon" data-icon="plus"></span>
+                                <span>New Group</span>
+                            </div>
+                            <span class="toggle-arrow" id="createGroupArrow" data-icon="chevronDown"></span>
+                        </div>
+                        <div class="create-group-body" id="createGroupBody">
+                            <input type="text" id="groupName" placeholder="Group name...">
+                            <div class="members-label">Select Members</div>
+                            <select id="groupMembers" multiple class="members-select">
+                                <option value="">Select friends...</option>
+                            </select>
+                            <button id="createGroupBtn" class="create-group-btn">
+                                Create Group
+                            </button>
+                        </div>
+                    </div>
+                    <div class="groups-section-header">
+                        <span>Your Groups</span>
+                        <span id="groupsCount" class="groups-count-badge">0</span>
+                    </div>
+                    <div id="groupsList" class="groups-list"></div>
+                </div>
+            </div>
+
+            <!-- Private Chats Section (shown only when unlocked) -->
+            <div id="privateChatsSection" style="display:none;">
+                <div class="private-section-header">
+                    <span>Private Chats</span>
+                    <button id="lockPrivateBtn" title="Lock private chats" data-icon-btn="lock"></button>
+                </div>
+                <div id="privateChatsListUI"></div>
+            </div>
+        </div>
+
+
+        <!-- Chat Area -->
+        <div class="chat-area">
+            <!-- Default State -->
+            <div id="defaultChat" class="default-chat">
+                <button class="mobile-back-btn" id="openSidebarBtn" title="Open Sidebar" style="position:absolute;top:14px;left:14px;">&#9776;</button>
+                <div class="welcome-message">
+                    <div class="welcome-icon" id="welcomeIconEl"></div>
+                    <h2>Welcome to EduChat</h2>
+                    <p>Select a chat from the sidebar to start messaging</p>
+                </div>
+            </div>
+
+            <!-- Individual Chat -->
+            <div id="individualChat" class="chat-container" style="display: none;">
+                <div class="chat-header">
+                    <button class="mobile-back-btn" id="backToSidebarBtn1" title="Back">&#8592;</button>
+                    <div class="chat-partner">
+                        <div class="partner-avatar" id="chatPartnerAvatar">
+                            <span class="avatar-fallback" data-icon="user"></span>
+                        </div>
+                        <div class="partner-info">
+                            <h4 id="chatPartnerName">Friend Name</h4>
+                            <span id="chatPartnerStatus" class="status-online">Online</span>
+                        </div>
+                    </div>
+                    <div class="chat-header-actions" id="chatHeaderActions">
+                        <!-- call buttons injected by calls.js -->
+                        <button class="chat-header-more-btn icon-btn" id="chatExpiryBtn" title="Auto-delete messages" style="font-size:16px">⏱</button>
+                        <button class="chat-header-more-btn icon-btn" id="chatMoreBtn" title="Chat options">
+                            <span class="three-dot-inner"><span></span><span></span><span></span></span>
+                        </button>
+                    </div>
+                </div>
+                <div id="chat" class="chat-messages"></div>
+                <!-- Typing indicator -->
+                <div id="typingIndicator" class="typing-indicator" style="display:none;">
+                    <div class="typing-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <span class="typing-label">typing...</span>
+                </div>
+                <div class="message-input">
+                    <!-- OTV indicator bar -->
+                    <div class="otv-input-indicator" id="otvIndicator" style="display:none;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M2 12C4.5 7 8 4 12 4s7.5 3 10 8c-2.5 5-6 8-10 8s-7.5-3-10-8z"/></svg>
+                        One-time view on
+                    </div>
+                    <div class="message-input-container">
+                        <!-- Left: emoji + attach doc -->
+                        <button class="emoji-toggle tb-icon-btn" title="Emoji" data-icon-btn="emoji"></button>
+                        <button class="attach-btn tb-icon-btn" data-chat="direct" title="Attach file" data-icon-btn="paperclip"></button>
+
+                        <textarea id="msg" placeholder="Type a message..." rows="1"></textarea>
+
+                        <!-- Right: 3-dots, mic, send -->
+                        <button class="tb-more-btn tb-icon-btn" id="tbMoreBtn" title="More options" onclick="toggleTbMenu('direct', this)">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+                        </button>
+                        <span id="voiceTimer" class="voice-timer" style="display:none;">00:00</span>
+                        <button id="voiceBtn" class="voice-record-btn tb-icon-btn" title="Voice message" onclick="startVoiceRecording('direct')" data-icon-btn="mic"></button>
+                        <button id="sendBtn" class="send-btn" data-icon-btn="send"></button>
+                    </div>
+                    <!-- 3-dots dropdown menu for direct chat -->
+                    <div class="tb-menu" id="tbMenuDirect" style="display:none;">
+                        <button class="tb-menu-item" onclick="triggerAttachFile('direct')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+                            <span>File / Photo</span>
+                        </button>
+                        <button class="tb-menu-item" onclick="triggerCamera()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                            <span>Camera</span>
+                        </button>
+                        <button class="tb-menu-item" onclick="closeTbMenuAndRun('direct', () => showScheduleModal('direct'))">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            <span>Schedule Message</span>
+                        </button>
+                        <button class="tb-menu-item" id="tbOtvBtn" onclick="toggleOneTimeViewMenu('direct')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M2 12C4.5 7 8 4 12 4s7.5 3 10 8c-2.5 5-6 8-10 8s-7.5-3-10-8z"/></svg>
+                            <span>One-time View</span>
+                            <span class="tb-menu-badge" id="tbOtvBadge" style="display:none;">ON</span>
+                        </button>
+                        <button class="tb-menu-item" onclick="sendLocationMsg('direct')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <span>Send Location</span>
+                        </button>
+                        <button class="tb-menu-item" onclick="sendContactMsg('direct')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <span>Send Contact</span>
+                        </button>
+                        <button class="tb-menu-item" id="tbVanishBtn" onclick="triggerVanishMode('direct')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                            <span>Vanish Mode</span>
+                            <span class="tb-menu-badge tb-vanish-badge" id="tbVanishBadge" style="display:none;">ON</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group Chat -->
+            <div id="groupChatContainer" class="chat-container" style="display: none;">
+                <div class="chat-header">
+                    <button class="mobile-back-btn" id="backToSidebarBtn2" title="Back">&#8592;</button>
+                    <div class="chat-partner">
+                        <div class="partner-avatar group-avatar" id="groupPartnerAvatar">
+                            <span class="avatar-fallback" data-icon="users"></span>
+                        </div>
+                        <div class="partner-info">
+                            <h4 id="groupChatName">Group Name</h4>
+                            <span class="members-count">0 members</span>
+                        </div>
+                    </div>
+                    <div class="group-header-actions">
+                        <button id="addMemberBtn" class="group-action-btn add-member-btn" title="Add Member">
+                            <span data-icon-btn="addUser"></span>
+                            <span class="btn-label">Add</span>
+                        </button>
+                        <button id="leaveGroupBtn" class="group-action-btn leave-btn" title="Leave Group">
+                            <span data-icon-btn="back"></span>
+                            <span class="btn-label">Leave</span>
+                        </button>
+                        <button id="shareGroupBtn" class="group-action-btn" title="Share Group Link">
+                            <span data-icon-btn="share"></span>
+                            <span class="btn-label">Invite</span>
+                        </button>
+                    </div>
+                </div>
+                <div id="groupChat" class="chat-messages"></div>
+                <!-- Typing indicator for group -->
+                <div id="groupTypingIndicator" class="typing-indicator" style="display:none;">
+                    <div class="typing-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <span class="typing-label">Someone is typing...</span>
+                </div>
+                <div class="message-input">
+                    <!-- OTV indicator bar (group) -->
+                    <div class="otv-input-indicator" id="otvGroupIndicator" style="display:none;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M2 12C4.5 7 8 4 12 4s7.5 3 10 8c-2.5 5-6 8-10 8s-7.5-3-10-8z"/></svg>
+                        One-time view on
+                    </div>
+                    <div class="message-input-container">
+                        <!-- Left: emoji + attach doc -->
+                        <button class="emoji-toggle tb-icon-btn" title="Emoji" data-icon-btn="emoji"></button>
+                        <button class="attach-btn tb-icon-btn" data-chat="group" title="Attach file" data-icon-btn="paperclip"></button>
+
+                        <textarea id="groupMsg" placeholder="Type a message..." rows="1"></textarea>
+
+                        <!-- Right: 3-dots, mic, send -->
+                        <button class="tb-more-btn tb-icon-btn" id="tbMoreGroupBtn" title="More options" onclick="toggleTbMenu('group', this)">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+                        </button>
+                        <span id="groupVoiceTimer" class="voice-timer" style="display:none;">00:00</span>
+                        <button id="groupVoiceBtn" class="voice-record-btn tb-icon-btn" title="Voice message" onclick="startVoiceRecording('group')" data-icon-btn="mic"></button>
+                        <button id="sendGroupBtn" class="send-btn" data-icon-btn="send"></button>
+                    </div>
+                    <!-- 3-dots dropdown menu for group chat -->
+                    <div class="tb-menu" id="tbMenuGroup" style="display:none;">
+                        <button class="tb-menu-item" onclick="triggerAttachFile('group')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+                            <span>File / Photo</span>
+                        </button>
+                        <button class="tb-menu-item" onclick="triggerCamera()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                            <span>Camera</span>
+                        </button>
+                        <button class="tb-menu-item" onclick="closeTbMenuAndRun('group', () => showScheduleModal('group'))">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            <span>Schedule Message</span>
+                        </button>
+                        <button class="tb-menu-item" id="tbOtvGroupBtn" onclick="toggleOneTimeViewMenu('group')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M2 12C4.5 7 8 4 12 4s7.5 3 10 8c-2.5 5-6 8-10 8s-7.5-3-10-8z"/></svg>
+                            <span>One-time View</span>
+                            <span class="tb-menu-badge" id="tbOtvGroupBadge" style="display:none;">ON</span>
+                        </button>
+                        <button class="tb-menu-item" onclick="sendLocationMsg('group')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <span>Send Location</span>
+                        </button>
+                        <button class="tb-menu-item" onclick="sendContactMsg('group')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <span>Send Contact</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cache Statistics Panel (Debug) -->
+    <div id="cacheStatsPanel" style="display: none; position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 8px; font-size: 12px; z-index: 1000;">
+        <h4 style="margin: 0 0 5px 0;">Cache Stats</h4>
+        <div id="cacheStatsContent"></div>
+        <button onclick="document.getElementById('cacheStatsPanel').style.display='none'" style="background: none; border: none; color: white; cursor: pointer; float: right;" data-icon-btn="close"></button>
+    </div>
+
+    <audio id="notifSound" src="ping.mp3" preload="auto"></audio>
+    <!-- Ring tone for calls — add ring.mp3 to folder later -->
+    <audio id="ringSound" src="ring.mp3" preload="auto" loop></audio>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Add Member Modal -->
+    <div id="addMemberModal" class="modal-overlay" style="display:none;">
+        <div class="modal add-member-modal">
+            <div class="modal-header">
+                <h3>Add Member</h3>
+                <button class="modal-close" id="closeAddMemberModal" data-icon-btn="close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-subtitle">Select friends to add to this group:</p>
+                <div id="addMemberFriendsList" class="add-member-friends-list"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancelAddMember">Cancel</button>
+                <button class="btn-primary" id="confirmAddMember">Add Selected</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leave Group Confirm Modal -->
+    <div id="leaveGroupModal" class="modal-overlay" style="display:none;">
+        <div class="modal leave-confirm-modal">
+            <div class="modal-header">
+                <h3><span data-icon="door" style="vertical-align:middle;margin-right:6px;"></span>Leave Group</h3>
+                <button class="modal-close" id="closeLeaveModal" data-icon-btn="close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="leave-warning-icon" data-icon="warning" style="font-size:0;"></div>
+                <p class="leave-warning-text">Are you sure you want to leave <strong id="leaveGroupName"></strong>?</p>
+                <p class="leave-warning-sub">You won't receive messages from this group anymore.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancelLeave">Cancel</button>
+                <button class="btn-danger" id="confirmLeave">Leave Group</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── PASSCODE ENTRY MODAL ── -->
+    <div class="modal-overlay" id="privateChatsPasscodeModal" style="display:none;">
+        <div class="modal passcode-modal">
+            <div class="modal-header">
+                <h3>Private Chats</h3>
+                <button class="modal-close" id="closePrivateModal" data-icon-btn="close"></button>
+            </div>
+            <div class="modal-body passcode-body">
+                <p id="privateModalSubtitle" class="passcode-subtitle">Enter your 4-digit passcode</p>
+
+                <!-- Biometric button shown first when biometric is enabled -->
+                <button class="biometric-unlock-btn" id="passcodeBiometricBtn" style="display:none;flex-direction:column;align-items:center;gap:8px;margin:16px auto;">
+                    <span style="font-size:22px;">👆</span> Use Fingerprint
+                </button>
+
+                <!-- Dots + numpad: hidden initially if biometric is active -->
+                <div id="passcodeDotsRow" style="display:flex;justify-content:center;">
+                    <div class="passcode-dots" id="passcodeDots">
+                        <div class="dot"></div><div class="dot"></div>
+                        <div class="dot"></div><div class="dot"></div>
+                    </div>
+                </div>
+                <div class="numpad" id="passcodeNumpad" style="display:none;">
+                    <button class="num-btn" data-n="1">1</button>
+                    <button class="num-btn" data-n="2">2</button>
+                    <button class="num-btn" data-n="3">3</button>
+                    <button class="num-btn" data-n="4">4</button>
+                    <button class="num-btn" data-n="5">5</button>
+                    <button class="num-btn" data-n="6">6</button>
+                    <button class="num-btn" data-n="7">7</button>
+                    <button class="num-btn" data-n="8">8</button>
+                    <button class="num-btn" data-n="9">9</button>
+                    <button class="num-btn num-btn-empty"></button>
+                    <button class="num-btn" data-n="0">0</button>
+                    <button class="num-btn num-btn-back" id="passcodeBackBtn" data-icon-btn="backspace"></button>
+                </div>
+
+                <div class="passcode-error" id="passcodeError" style="display:none;"></div>
+                <!-- Shown when fingerprint fails and numpad is revealed -->
+                <p id="passcodeFallbackHint" style="display:none;font-size:12px;color:var(--text-secondary);text-align:center;margin-top:4px;">Fingerprint failed — enter passcode</p>
+                <button class="forgot-btn" id="forgotPasscodeBtn">Forgot passcode?</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SETUP MODAL (first time) ── -->
+    <div class="modal-overlay" id="privateChatsSetupModal" style="display:none;">
+        <div class="modal passcode-modal">
+            <div class="modal-header">
+                <h3>Set Up Private Chats</h3>
+                <button class="modal-close" id="closeSetupModal" data-icon-btn="close"></button>
+            </div>
+            <div class="modal-body passcode-body">
+                <p id="setupModalSubtitle" class="passcode-subtitle">Create a 4-digit passcode</p>
+                <div class="passcode-dots" id="setupPasscodeDots">
+                    <div class="dot"></div><div class="dot"></div>
+                    <div class="dot"></div><div class="dot"></div>
+                </div>
+                <div class="numpad">
+                    <button class="num-btn" data-setup="1">1</button>
+                    <button class="num-btn" data-setup="2">2</button>
+                    <button class="num-btn" data-setup="3">3</button>
+                    <button class="num-btn" data-setup="4">4</button>
+                    <button class="num-btn" data-setup="5">5</button>
+                    <button class="num-btn" data-setup="6">6</button>
+                    <button class="num-btn" data-setup="7">7</button>
+                    <button class="num-btn" data-setup="8">8</button>
+                    <button class="num-btn" data-setup="9">9</button>
+                    <button class="num-btn num-btn-empty"></button>
+                    <button class="num-btn" data-setup="0">0</button>
+                    <button class="num-btn num-btn-back" id="setupBackBtn" data-icon-btn="backspace"></button>
+                </div>
+                <div class="passcode-error" id="setupError" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── CHANGE PASSCODE MODAL ── -->
+    <div class="modal-overlay" id="changePasscodeModal" style="display:none;">
+        <div class="modal passcode-modal">
+            <div class="modal-header">
+                <h3><span data-icon="key" style="vertical-align:middle;margin-right:6px;"></span>Change Passcode</h3>
+                <button class="modal-close" id="closeChangePasscodeModal" data-icon-btn="close"></button>
+            </div>
+            <div class="modal-body passcode-body">
+                <p id="changePasscodeSubtitle" class="passcode-subtitle">Enter OTP sent to your email</p>
+
+                <!-- OTP step (shown first) -->
+                <div id="changePasscodeOtpRow" style="display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;">
+                    <input id="changeOtpInput" type="number" inputmode="numeric" maxlength="6"
+                        placeholder="6-digit OTP"
+                        style="width:180px;padding:10px 14px;border-radius:10px;border:1px solid var(--border);
+                               background:var(--input-bg,var(--bg-secondary));color:var(--text-primary);
+                               font-size:20px;text-align:center;letter-spacing:4px;outline:none;">
+                    <div style="display:flex;gap:10px;">
+                        <button id="verifyChangeOtpBtn" class="btn-primary" style="padding:8px 20px;border-radius:8px;">Verify OTP</button>
+                        <button id="resendChangeOtpBtn" class="btn-secondary" style="padding:8px 16px;border-radius:8px;" disabled>Resend OTP</button>
+                    </div>
+                </div>
+
+                <!-- Passcode numpad step (hidden until OTP verified) -->
+                <div id="changePasscodeNumpad" style="display:none;flex-direction:column;align-items:center;gap:12px;width:100%;">
+                    <div class="passcode-dots" id="changePasscodeDots">
+                        <div class="dot"></div><div class="dot"></div>
+                        <div class="dot"></div><div class="dot"></div>
+                    </div>
+                    <div class="numpad">
+                        <button class="num-btn" data-change="1">1</button>
+                        <button class="num-btn" data-change="2">2</button>
+                        <button class="num-btn" data-change="3">3</button>
+                        <button class="num-btn" data-change="4">4</button>
+                        <button class="num-btn" data-change="5">5</button>
+                        <button class="num-btn" data-change="6">6</button>
+                        <button class="num-btn" data-change="7">7</button>
+                        <button class="num-btn" data-change="8">8</button>
+                        <button class="num-btn" data-change="9">9</button>
+                        <button class="num-btn num-btn-empty"></button>
+                        <button class="num-btn" data-change="0">0</button>
+                        <button class="num-btn num-btn-back" id="changeBackBtn" data-icon-btn="backspace"></button>
+                    </div>
+                </div>
+
+                <div class="passcode-error" id="changePasscodeError" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── EMAIL OTP MODAL ── -->
+    <div class="modal-overlay" id="emailOtpModal" style="display:none;">
+        <div class="modal" style="max-width:380px;">
+            <div class="modal-header">
+                <h3><span data-icon="mail" style="vertical-align:middle;margin-right:6px;"></span>Email Verification</h3>
+                <button class="modal-close" id="closeOtpModal" data-icon-btn="close"></button>
+            </div>
+            <div class="modal-body" style="padding:20px;">
+                <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px;">
+                    A 6-digit OTP has been sent to:<br>
+                    <strong id="otpEmailLabel" style="color:var(--text-primary);"></strong>
+                </p>
+                <input type="number" id="otpInput" class="profile-input"
+                    placeholder="Enter 6-digit OTP" maxlength="6"
+                    style="width:100%;padding:12px;font-size:18px;text-align:center;letter-spacing:6px;margin-bottom:12px;">
+                <div class="passcode-error" id="otpError" style="display:none;margin-bottom:12px;"></div>
+                <button class="profile-save-btn" id="verifyOtpBtn" style="width:100%;margin-bottom:10px;">Verify OTP</button>
+                <button class="btn-secondary" id="resendOtpBtn" style="width:100%;">Resend OTP</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── BLOCKED CONTACTS MODAL ── -->
+    <div class="modal-overlay" id="blockedContactsModal" style="display:none;">
+        <div class="modal" style="max-width:400px;">
+            <div class="modal-header">
+                <h3>Blocked Contacts</h3>
+                <button class="modal-close" id="closeBlockedModal" data-icon-btn="close"></button>
+            </div>
+            <div class="modal-body" style="padding:16px;">
+                <div id="blockedContactsList"></div>
+                <button class="btn-secondary" id="closeBlockedBtn" style="width:100%;margin-top:16px;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── HELP & ABOUT FULLSCREEN OVERLAY ── -->
+    <div id="helpAboutOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:#07090f;flex-direction:column;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:52px;background:rgba(14,17,23,0.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.07);flex-shrink:0;">
+            <span style="font-family:sans-serif;font-weight:600;color:#f0f2f7;font-size:15px;">Help &amp; About</span>
+            <button id="closeHelpOverlay" style="background:rgba(255,255,255,0.08);border:none;color:#f0f2f7;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1;" title="Close">&#x2715;</button>
+        </div>
+        <iframe id="helpAboutIframe" src="about.html" style="flex:1;border:none;width:100%;background:#07090f;" loading="lazy"></iframe>
+    </div>
+
+    <!-- Google Identity Services (for Drive OAuth) -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
+    <!-- Cache System -->
+    <script src="memoryCache.js"></script>
+    <script src="sessionCache.js"></script>
+    <script src="cacheManager.js"></script>
+    <script src="hybridCache.js"></script>
+
+    <!-- ── Modular App (replaces chat.js) ────────────────────
+         Load order matters: globals first, then ui, then all
+         feature modules, then the main app bootstrapper.
+    ─────────────────────────────────────────────────────── -->
+    <script src="themes.js"></script>
+    <script src="icons.js"></script>                <!-- SVG icon library -->
+    <script src="backNavigation.js"></script>       <!-- Mobile back button handler -->
+    <script src="chatInteractions.js"></script>     <!-- Reactions, swipe-reply, share links -->
+    <script src="modules/e2ee.js"></script>      <!-- End-to-End Encryption (ECDH + AES-GCM) -->
+    <script src="modules/globals.js"></script>    <!-- Firebase init, shared state, escape helpers -->
+    <script src="modules/ui.js"></script>          <!-- Modal, Toast, Badge managers, dark mode -->
+    <script src="modules/presence.js"></script>    <!-- User data loading, presence -->
+    <script src="modules/messaging.js"></script>   <!-- Message render, send, scroll, typing, voice -->
+    <script src="modules/friends.js"></script>     <!-- Friend list, search, requests, remove -->
+    <script src="modules/groups.js"></script>      <!-- Group creation, members, leave -->
+    <script src="modules/calls.js"></script>       <!-- WebRTC call buttons -->
+    <script src="modules/app.js"></script>         <!-- Auth, init, event listeners, tab switching -->
+
+    <!-- WebRTC System - Load AFTER app modules -->
+    <script src="signaling.js"></script>
+    <script src="webrtc.js"></script>
+    <script src="groupCall.js"></script>         <!-- Group video conference -->
+
+    <!-- Emoji Picker -->
+    <script src="emojiPicker.js"></script>
+
+    <!-- Google Drive File Sharing + Auto Backup (fixed) -->
+    <script src="driveFileShare.js"></script>
+    <script src="autoBackup.js"></script>
+
+    <!-- Profile + Stories System -->
+    <script src="profile.js"></script>
+    <script src="friendProfile.js"></script>
+    <script src="qr.js"></script>
+
+    <!-- Private Chats System -->
+    <script src="privateChats.js"></script>
+    <script src="mediaLightbox.js"></script>     <!-- Lightbox viewer for images -->
+    <script src="msgExpiry.js"></script>          <!-- Per-chat message expiry timer -->
+    <script src="totp.js"></script>               <!-- Google Authenticator 2FA -->
+
+    <!-- Push Notifications (Firestore-based, no server needed) -->
+    <script src="pushNotifications.js"></script>
+
+    <!-- AI Assistant -->
+    <script src="modules/ai.js"></script>
+
+    <!-- Debug helpers -->
+    <script>
+        let DEBUG_MODE = localStorage.getItem('educhat_debug') === 'true';
+
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+                DEBUG_MODE = !DEBUG_MODE;
+                localStorage.setItem('educhat_debug', DEBUG_MODE);
+                alert('Debug mode: ' + (DEBUG_MODE ? 'ON' : 'OFF'));
+            }
+        });
+
+        window.showCacheStats = async function() {
+            if (!DEBUG_MODE) return;
+            const stats   = await hybridCache.getStats();
+            const panel   = document.getElementById('cacheStatsPanel');
+            const content = document.getElementById('cacheStatsContent');
+            if (panel && content) {
+                content.innerHTML = `
+                    <div>Memory: ${stats.memory.keys} items</div>
+                    <div>Session: ${stats.session.size} items</div>
+                    ${stats.indexedDB
+                        ? `<div>IndexedDB: ${stats.indexedDB.totalMessages} messages / ${stats.indexedDB.totalUsers} users</div>`
+                        : '<div>IndexedDB: Not available</div>'}
+                `;
+                panel.style.display = 'block';
+            }
+        };
+    </script>
+    <!-- Mobile Sidebar Init -->
+    <script>
+        if (window.innerWidth <= 599) {
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) sidebar.classList.remove('mobile-hidden');
+        }
+    </script>
+    <!-- ── MOBILE KEYBOARD FIX ─────────────────────────────────────────────
+         iOS Safari does NOT honour interactive-widget in the viewport meta.
+         Instead we use the visualViewport API to pin the input bar to the
+         visible area whenever the on-screen keyboard changes the viewport height.
+         Android Chrome ≥ 108 is handled by the meta tag; this is the iOS fallback.
+    ──────────────────────────────────────────────────────────────────────── -->
+    <script>
+    (function () {
+        // --kb-offset: tracks on-screen keyboard height for input bar positioning
+        // iOS Safari: visualViewport shrinks when keyboard opens → we measure the gap
+        // Android Chrome: handled by interactive-widget meta tag (no JS needed)
+        // Both: we also scroll chat to bottom when keyboard opens
+
+        function isMobile() { return window.innerWidth <= 768; }
+
+        function setOffset(px) {
+            document.documentElement.style.setProperty('--kb-offset', px + 'px');
+        }
+
+        // Detect iOS Safari specifically (visualViewport behaves differently)
+        const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
+                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+        if (window.visualViewport && isIOS) {
+            function onViewportResize() {
+                if (!isMobile()) { setOffset(0); return; }
+                // Keyboard height = layout viewport bottom minus visual viewport bottom
+                const offset = Math.max(0,
+                    window.innerHeight
+                    - window.visualViewport.height
+                    - window.visualViewport.offsetTop
+                );
+                setOffset(offset);
+                // Scroll active chat to bottom when keyboard opens
+                if (offset > 50) {
+                    const activeChatId = document.getElementById('groupChatContainer')?.style.display !== 'none'
+                        ? 'groupChat' : 'chat';
+                    const el = document.getElementById(activeChatId);
+                    if (el) requestAnimationFrame(() => { el.scrollTop = el.scrollHeight; });
+                }
+            }
+            window.visualViewport.addEventListener('resize', onViewportResize, { passive: true });
+            window.visualViewport.addEventListener('scroll', onViewportResize, { passive: true });
+        }
+
+        // For non-iOS (Android) or when visualViewport unavailable: reset offset
+        window.addEventListener('resize', () => {
+            if (!isMobile()) setOffset(0);
+        }, { passive: true });
+
+        setOffset(0);
+    })();
+    </script>
+
+    <!-- PWA Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => {
+                        console.log('✅ SW registered:', reg.scope);
+
+                        // Check for updates every 30 seconds
+                        setInterval(() => reg.update(), 30 * 1000);
+
+                        // Detect new SW installing
+                        reg.addEventListener('updatefound', () => {
+                            const newWorker = reg.installing;
+                            if (!newWorker) return;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    showUpdateToast();
+                                }
+                            });
+                        });
+                    })
+                    .catch(err => console.warn('SW failed:', err));
+
+                // New SW activated (skipWaiting) → reload silently
+                let reloadPending = false;
+                navigator.serviceWorker.addEventListener('message', (event) => {
+                    if (event.data?.type === 'SW_UPDATED' && !reloadPending) {
+                        reloadPending = true;
+                        console.log('🔄 New version active — reloading...');
+                        setTimeout(() => window.location.reload(), 300);
+                    }
+                });
+
+                // Also catch controller change (new SW took over)
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    if (!reloadPending) {
+                        reloadPending = true;
+                        window.location.reload();
+                    }
+                });
+            });
+        }
+
+        function showUpdateToast() {
+            if (document.getElementById('_swUpdateBanner')) return;
+            const style = document.createElement('style');
+            style.textContent = `@keyframes _swSpin{to{transform:rotate(360deg)}}`;
+            document.head.appendChild(style);
+            const banner = document.createElement('div');
+            banner.id = '_swUpdateBanner';
+            banner.style.cssText = `
+                position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+                background:#323232;color:#fff;padding:10px 20px;border-radius:20px;
+                font-size:.85rem;z-index:99999;box-shadow:0 4px 12px rgba(0,0,0,.3);
+                display:flex;align-items:center;gap:8px;white-space:nowrap;
+            `;
+            banner.innerHTML = `<span style="animation:_swSpin 1s linear infinite;display:inline-block;line-height:1">${window.Icons ? window.Icons.get('refresh', 16) : '↻'}</span> Updating app…`;
+            document.body.appendChild(banner);
+        }
+    </script>
+    <!-- FIX: Call notification tap చేసి browser open అయినప్పుడు — URL params check -->\n    <script>
+        window.addEventListener('appInitialized', () => {
+            const params = new URLSearchParams(window.location.search);
+            const callType = params.get('callType');
+            const declineCallId = params.get('declineCall');
+
+            // ── Instagram share_target handler ──────────────────
+            // When user shares an Instagram link via PWA share sheet,
+            // manifest share_target sends it here as ?shareText=<url>
+            const shareText = params.get('shareText') || '';
+            if (shareText && /instagram\.com\/(p|reel|tv)\/[\w-]+/.test(shareText)) {
+                history.replaceState({}, '', '/chat.html');
+                // Wait for storiesManager to be ready, then open composer with prefilled URL
+                const tryOpen = () => {
+                    if (window.storiesManager) {
+                        window.storiesManager.openComposer(shareText);
+                    } else {
+                        setTimeout(tryOpen, 300);
+                    }
+                };
+                tryOpen();
+                return;
+            }
+
+            if (declineCallId) {
+                // FIX: Notification లో Decline button → background లో open అయి decline చేయాలి
+                console.log('📞 Declining call from notification:', declineCallId);
+                const tryDecline = () => {
+                    if (window.signalingManager?.isReady()) {
+                        window.signalingManager.declineCall(declineCallId).catch(e =>
+                            console.warn('Decline error:', e)
+                        );
+                    } else if (window.db && window.currentUser) {
+                        window.db.collection('calls').doc(declineCallId).update({
+                            status: 'declined',
+                            declinedAt: new Date()
+                        }).catch(e => console.warn('Direct decline error:', e));
+                    } else {
+                        setTimeout(tryDecline, 300);
+                    }
+                };
+                tryDecline();
+                history.replaceState({}, '', '/chat.html');
+            } else if (callType === 'call_video' || callType === 'call_voice') {
+                console.log('📞 App opened from call notification — signaling will handle it');
+                // Firestore లో pending call document ఉంటే signalingManager automatically ring చేస్తుంది
+                history.replaceState({}, '', '/chat.html');
+            }
+        });
+    </script>
+    <!-- Pull-to-Refresh on Sidebar -->
+    <script>
+    (function initPullToRefresh() {
+        const THRESHOLD   = 80;   // px drag needed to trigger refresh
+        const MAX_PULL    = 110;  // max visual pull distance
+
+        let startY = 0, currentY = 0, pulling = false, triggered = false;
+
+        // Indicator element
+        const indicator = document.createElement('div');
+        indicator.id = 'pullRefreshIndicator';
+        indicator.style.cssText = `
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 0;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 6px;
+            overflow: hidden;
+            z-index: 99999;
+            pointer-events: none;
+            transition: background 0.2s;
+            background: transparent;
+        `;
+        indicator.innerHTML = `
+            <div id="pullRefreshIcon" style="
+                display:flex;align-items:center;gap:6px;
+                font-size:0.8rem;font-weight:500;
+                color:var(--text-secondary,#888);
+                opacity:0;
+                transition:opacity 0.15s, transform 0.15s;
+                transform:scale(0.8);
+            ">
+                <span id="pullRefreshSvg" style="display:inline-flex;transition:transform 0.3s;"></span>
+                <span id="pullRefreshLabel">Pull to refresh</span>
+            </div>
+        `;
+        document.body.appendChild(indicator);
+
+        function getSidebar() {
+            return document.querySelector('.sidebar');
+        }
+
+        function isSidebarVisible() {
+            const sb = getSidebar();
+            return sb && !sb.classList.contains('mobile-hidden');
+        }
+
+        function isMobile() {
+            return window.innerWidth <= 599;
+        }
+
+        function setIndicator(progress, ready) {
+            const h = Math.min(progress * MAX_PULL, MAX_PULL);
+            indicator.style.height = h + 'px';
+            const icon = document.getElementById('pullRefreshIcon');
+            const svgEl = document.getElementById('pullRefreshSvg');
+            const label = document.getElementById('pullRefreshLabel');
+            if (!icon) return;
+
+            const opacity = Math.min(progress * 2, 1);
+            icon.style.opacity = opacity;
+            icon.style.transform = `scale(${0.8 + 0.2 * Math.min(progress, 1)})`;
+
+            if (window.Icons && svgEl && !svgEl._hydrated) {
+                svgEl.innerHTML = window.Icons.get('refresh', 18);
+                svgEl._hydrated = true;
+            }
+
+            if (ready) {
+                svgEl.style.transform = 'rotate(180deg)';
+                label.textContent = 'Release to refresh';
+                indicator.style.background = 'var(--accent,#6c63ff)22';
+                icon.style.color = 'var(--accent,#6c63ff)';
+            } else {
+                svgEl.style.transform = `rotate(${progress * 180}deg)`;
+                label.textContent = 'Pull to refresh';
+                indicator.style.background = 'transparent';
+                icon.style.color = 'var(--text-secondary,#888)';
+            }
+        }
+
+        function resetIndicator() {
+            indicator.style.transition = 'height 0.25s ease';
+            indicator.style.height = '0px';
+            setTimeout(() => { indicator.style.transition = ''; }, 300);
+            const icon = document.getElementById('pullRefreshIcon');
+            if (icon) icon.style.opacity = '0';
+            indicator.style.background = 'transparent';
+        }
+
+        function doRefresh() {
+            // Spinner animation while refreshing
+            const svgEl = document.getElementById('pullRefreshSvg');
+            if (svgEl) svgEl.style.animation = 'ptr-spin 0.6s linear infinite';
+            const label = document.getElementById('pullRefreshLabel');
+            if (label) label.textContent = 'Refreshing…';
+            indicator.style.height = '52px';
+
+            const style = document.createElement('style');
+            style.textContent = '@keyframes ptr-spin{to{transform:rotate(360deg)}}';
+            document.head.appendChild(style);
+
+            setTimeout(() => window.location.reload(), 500);
+        }
+
+        document.addEventListener('touchstart', (e) => {
+            if (!isMobile()) return;
+            if (!isSidebarVisible()) return;
+
+            const sb = getSidebar();
+            // Only trigger if sidebar scroll is at top
+            if (sb && sb.scrollTop > 0) return;
+
+            startY   = e.touches[0].clientY;
+            currentY = startY;
+            pulling  = true;
+            triggered = false;
+            indicator.style.transition = '';
+        }, { passive: true });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!pulling || !isMobile()) return;
+            if (!isSidebarVisible()) { pulling = false; return; }
+
+            currentY = e.touches[0].clientY;
+            const delta = currentY - startY;
+            if (delta <= 0) { resetIndicator(); return; }
+
+            const progress = Math.min(delta / THRESHOLD, 1.3);
+            triggered = delta >= THRESHOLD;
+            setIndicator(progress, triggered);
+        }, { passive: true });
+
+        document.addEventListener('touchend', () => {
+            if (!pulling) return;
+            pulling = false;
+
+            if (triggered) {
+                doRefresh();
+            } else {
+                resetIndicator();
+            }
+        });
+    })();
+    </script>
+
+<script>
+/* ============================================================
+   TYPE BAR — 3-DOTS MENU LOGIC
+   ============================================================ */
+
+// --- Toggle menu open/close ---
+function toggleTbMenu(chatType, btn) {
+    const menuId = chatType === 'direct' ? 'tbMenuDirect' : 'tbMenuGroup';
+    const otherMenuId = chatType === 'direct' ? 'tbMenuGroup' : 'tbMenuDirect';
+    const menu = document.getElementById(menuId);
+    const otherMenu = document.getElementById(otherMenuId);
+    if (otherMenu) { otherMenu.style.display = 'none'; }
+    const isOpen = menu && menu.style.display !== 'none';
+    if (menu) { menu.style.display = isOpen ? 'none' : 'block'; }
+    if (btn) { btn.classList.toggle('tb-menu-open', !isOpen); }
+    if (!isOpen) _syncVanishBadge(chatType);
+}
+
+function closeTbMenu() {
+    ['tbMenuDirect','tbMenuGroup'].forEach(id => {
+        const m = document.getElementById(id);
+        if (m) m.style.display = 'none';
+    });
+    ['tbMoreBtn','tbMoreGroupBtn'].forEach(id => {
+        const b = document.getElementById(id);
+        if (b) b.classList.remove('tb-menu-open');
+    });
+}
+
+function closeTbMenuAndRun(chatType, fn) {
+    closeTbMenu();
+    if (typeof fn === 'function') fn();
+}
+
+document.addEventListener('click', function(e) {
+    ['tbMenuDirect', 'tbMenuGroup'].forEach(id => {
+        const menu = document.getElementById(id);
+        if (!menu || menu.style.display === 'none') return;
+        const moreBtn = document.getElementById(id === 'tbMenuDirect' ? 'tbMoreBtn' : 'tbMoreGroupBtn');
+        if (moreBtn && (moreBtn.contains(e.target) || menu.contains(e.target))) return;
+        menu.style.display = 'none';
+        if (moreBtn) moreBtn.classList.remove('tb-menu-open');
+    });
+}, true);
+
+// --- Attach file ---
+function triggerAttachFile(chatType) {
+    closeTbMenu();
+    // Trigger existing attach-btn click (preserves Google Drive auth flow)
+    const btn = document.querySelector(`.attach-btn[data-chat="${chatType}"]`);
+    if (btn) btn.click();
+}
+
+// --- Camera ---
+function triggerCamera() {
+    closeTbMenu();
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.capture = 'environment';
+    input.style.display = 'none';
+    document.body.appendChild(input);
+    input.addEventListener('change', () => {
+        if (input.files && input.files[0]) {
+            const chatType = window.getActiveGroupID() && document.getElementById('groupChatContainer')?.style.display !== 'none' ? 'group' : 'direct';
+            if (typeof window.showFilePreviewModal === 'function') {
+                window.showFilePreviewModal(input.files[0], chatType);
+            }
+        }
+        input.remove();
+    });
+    input.click();
+}
+
+// --- One-time view toggle from menu ---
+function toggleOneTimeViewMenu(chatType) {
+    window._oneTimeViewEnabled = !window._oneTimeViewEnabled;
+    const indId = chatType === 'direct' ? 'otvIndicator' : 'otvGroupIndicator';
+    const ind = document.getElementById(indId);
+    if (ind) ind.style.display = window._oneTimeViewEnabled ? 'flex' : 'none';
+    const badgeId = chatType === 'direct' ? 'tbOtvBadge' : 'tbOtvGroupBadge';
+    const badge = document.getElementById(badgeId);
+    if (badge) badge.style.display = window._oneTimeViewEnabled ? 'inline-block' : 'none';
+    const btnId = chatType === 'direct' ? 'tbOtvBtn' : 'tbOtvGroupBtn';
+    const btn = document.getElementById(btnId);
+    if (btn) btn.classList.toggle('tb-item-active', window._oneTimeViewEnabled);
+    // Don't close menu — user can see the state toggled
+}
+
+// --- Vanish Mode — properly wired to existing openChatOptionsMenu ---
+async function triggerVanishMode(chatType) {
+    closeTbMenu();
+    if (!window.currentUser || !window.getActiveChatUID()) {
+        console.warn('Vanish mode: no active chat');
+        return;
+    }
+    const chatId = typeof window.generateChatId === 'function'
+        ? window.generateChatId(window.currentUser.uid, window.getActiveChatUID())
+        : `${window.currentUser.uid}_${window.getActiveChatUID()}`;
+    const vanishKey = `vanishMode_${chatId}`;
+
+    // Read current state from Firestore (source of truth, same as friends.js)
+    let isVanishOn = localStorage.getItem(vanishKey) === 'true';
+    try {
+        const doc = await window.db.collection('vanishMode').doc(chatId).get();
+        if (doc.exists) {
+            isVanishOn = doc.data()?.enabled === true;
+            localStorage.setItem(vanishKey, isVanishOn ? 'true' : 'false');
+        }
+    } catch(e) { /* use localStorage fallback */ }
+
+    const nowOn = !isVanishOn;
+    localStorage.setItem(vanishKey, nowOn ? 'true' : 'false');
+
+    try {
+        await window.db.collection('vanishMode').doc(chatId).set({
+            enabled: nowOn,
+            toggledBy: window.currentUser.uid,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    } catch(e) { console.error('Vanish Firestore sync error:', e); }
+
+    if (!nowOn && typeof window.deleteVanishMessages === 'function') {
+        await window.deleteVanishMessages(chatId);
+    }
+
+    // Update banner in current open chat
+    if (typeof window.updateVanishBanner === 'function') {
+        window.updateVanishBanner(window.getActiveChatUID());
+    }
+
+    // Sync badge
+    _syncVanishBadge(chatType);
+
+    // Toast
+    if (window.toastManager) {
+        window.toastManager.show({ type: 'info', title: nowOn ? '👻 Vanish Mode ON' : '👻 Vanish Mode OFF', body: nowOn ? 'Messages will disappear when turned off' : 'Vanish messages deleted', duration: 2800 });
+    }
+}
+
+function _syncVanishBadge(chatType) {
+    if (!window.currentUser || !window.getActiveChatUID() || typeof window.generateChatId !== 'function') return;
+    const chatId = window.generateChatId(window.currentUser.uid, window.getActiveChatUID());
+    const isOn = localStorage.getItem(`vanishMode_${chatId}`) === 'true';
+    const badge = document.getElementById('tbVanishBadge');
+    if (badge) badge.style.display = isOn ? 'inline-block' : 'none';
+    const btn = document.getElementById('tbVanishBtn');
+    if (btn) btn.classList.toggle('tb-item-active', isOn);
+}
+
+// --- Send Location ---
+async function sendLocationMsg(chatType) {
+    closeTbMenu();
+    if (!navigator.geolocation) { alert('Geolocation not supported.'); return; }
+
+    // Show a loading toast
+    if (window.toastManager) window.toastManager.show({ type: 'info', title: 'Getting location…', duration: 2000 });
+
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const mapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+
+        const msgData = {
+            type: 'location',
+            lat: latitude,
+            lng: longitude,
+            mapsUrl,
+            text: `📍 Location shared`,
+            time: new Date(),
+        };
+
+        if (chatType === 'direct' && window.currentUser && window.getActiveChatUID() && window.db) {
+            const chatId = window.generateChatId(window.currentUser.uid, window.getActiveChatUID());
+            await window.db.collection('messages').add({
+                chatId,
+                participants: [window.currentUser.uid, window.getActiveChatUID()],
+                sender: window.currentUser.uid,
+                ...msgData,
+            });
+            await window.db.collection('users').doc(window.getActiveChatUID()).update({
+                [`unreadCounts.${chatId}`]: firebase.firestore.FieldValue.increment(1)
+            });
+        } else if (chatType === 'group' && window.getActiveGroupID() && window.db) {
+            await window.db.collection('groupMessages').add({
+                groupId: window.getActiveGroupID(),
+                sender: window.currentUser.uid,
+                senderName: window.currentUserData?.name || 'User',
+                ...msgData,
+            });
+        }
+    }, () => {
+        alert('Could not get your location. Please allow location access and try again.');
+    }, { timeout: 10000 });
+}
+
+// --- Send Contact Modal ---
+function sendContactMsg(chatType) {
+    closeTbMenu();
+
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay contact-modal-overlay';
+    overlay.style.display = 'flex';
+    overlay.innerHTML = `
+        <div class="modal contact-send-modal">
+            <div class="modal-header">
+                <h3>Send Contact</h3>
+                <button class="modal-close" id="contactModalClose">&times;</button>
+            </div>
+            <div class="modal-body" style="padding:20px;display:flex;flex-direction:column;gap:14px;">
+                <div class="contact-modal-avatar">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                    <div class="contact-modal-field">
+                        <label class="contact-modal-label">Name</label>
+                        <input type="text" id="contactModalName" class="contact-modal-input" placeholder="Full name" autocomplete="off"/>
+                    </div>
+                    <div class="contact-modal-field">
+                        <label class="contact-modal-label">Phone Number</label>
+                        <input type="tel" id="contactModalPhone" class="contact-modal-input" placeholder="+91 98765 43210" autocomplete="tel"/>
+                    </div>
+                </div>
+                <button class="send-btn contact-modal-send" id="contactModalSend" style="width:100%;padding:10px;border-radius:10px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    Send Contact
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const nameInput = overlay.querySelector('#contactModalName');
+    const phoneInput = overlay.querySelector('#contactModalPhone');
+    const sendBtn2 = overlay.querySelector('#contactModalSend');
+    const closeBtn = overlay.querySelector('#contactModalClose');
+
+    setTimeout(() => nameInput.focus(), 100);
+
+    const close = () => overlay.remove();
+    closeBtn.addEventListener('click', close);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+
+    sendBtn2.addEventListener('click', async () => {
+        const name = nameInput.value.trim();
+        const phone = phoneInput.value.trim();
+        if (!name) { nameInput.focus(); return; }
+        if (!phone) { phoneInput.focus(); return; }
+
+        close();
+
+        const msgData = {
+            type: 'contact',
+            contactName: name,
+            contactPhone: phone,
+            text: `👤 Contact: ${name}`,
+            time: new Date(),
+        };
+
+        if (chatType === 'direct' && window.currentUser && window.getActiveChatUID() && window.db) {
+            const chatId = window.generateChatId(window.currentUser.uid, window.getActiveChatUID());
+            await window.db.collection('messages').add({
+                chatId,
+                participants: [window.currentUser.uid, window.getActiveChatUID()],
+                sender: window.currentUser.uid,
+                ...msgData,
+            });
+            await window.db.collection('users').doc(window.getActiveChatUID()).update({
+                [`unreadCounts.${chatId}`]: firebase.firestore.FieldValue.increment(1)
+            });
+        } else if (chatType === 'group' && window.getActiveGroupID() && window.db) {
+            await window.db.collection('groupMessages').add({
+                groupId: window.getActiveGroupID(),
+                sender: window.currentUser.uid,
+                senderName: window.currentUserData?.name || 'User',
+                ...msgData,
+            });
+        }
+    });
+}
+
+// ─── Inline File Preview Bar (above textarea, no modal) ─────
+// Shows a compact preview strip directly above the message-input-container.
+// User types caption in the existing textarea, then hits Send.
+function showFilePreviewModal(file, chatType) {
+    const isImage = file.type.startsWith('image/');
+    const isVideo = file.type.startsWith('video/');
+
+    // Find the correct message-input wrapper
+    const inputId   = chatType === 'group' ? 'groupMsg' : 'msg';
+    const inputArea = document.getElementById(inputId)?.closest('.message-input');
+    if (!inputArea) return;
+
+    // Remove any previous inline preview bar for this chatType
+    _dismissInlineFP(chatType);
+
+    const sizeStr = file.size > 1024 * 1024
+        ? (file.size / (1024 * 1024)).toFixed(1) + ' MB'
+        : Math.round(file.size / 1024) + ' KB';
+
+    const ext = file.name.split('.').pop().toUpperCase();
+
+    // Build thumbnail HTML
+    let thumbHTML = '';
+    if (isImage) {
+        thumbHTML = `<img class="ifp-thumb" id="ifpThumb_${chatType}" src="" alt="preview">`;
+    } else if (isVideo) {
+        thumbHTML = `<video class="ifp-thumb" id="ifpThumb_${chatType}" muted playsinline></video>`;
+    } else {
+        thumbHTML = `<div class="ifp-ext">${ext}</div>`;
+    }
+
+    const bar = document.createElement('div');
+    bar.id        = `ifpBar_${chatType}`;
+    bar.className = 'ifp-bar';
+    bar.innerHTML = `
+        <div class="ifp-left">
+            <div class="ifp-thumb-wrap">${thumbHTML}</div>
+            <div class="ifp-info">
+                <span class="ifp-name">${file.name}</span>
+                <span class="ifp-size">${sizeStr}</span>
+            </div>
+        </div>
+        <button class="ifp-cancel" id="ifpCancel_${chatType}" title="Cancel">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+        </button>
+    `;
+
+    // Insert bar immediately above the message-input-container div
+    const container = inputArea.querySelector('.message-input-container');
+    inputArea.insertBefore(bar, container);
+
+    // Load media thumbnail
+    if (isImage) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const el = document.getElementById(`ifpThumb_${chatType}`);
+            if (el) el.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    } else if (isVideo) {
+        const el = document.getElementById(`ifpThumb_${chatType}`);
+        if (el) el.src = URL.createObjectURL(file);
+    }
+
+    // Change textarea placeholder so user knows they can add a caption
+    const textarea = document.getElementById(inputId);
+    if (textarea) {
+        textarea._ifpPrevPlaceholder = textarea.placeholder;
+        textarea.placeholder = 'Add a caption…';
+        textarea.focus();
+    }
+
+    // Store pending file globally so send buttons can access it
+    window[`_ifpPending_${chatType}`] = { file, chatType };
+
+    // Cancel button
+    document.getElementById(`ifpCancel_${chatType}`)?.addEventListener('click', () => {
+        _dismissInlineFP(chatType);
+    });
+
+    // Intercept the Send button (capture phase so we run before other listeners)
+    const sendBtnId = chatType === 'group' ? 'sendGroupBtn' : 'sendBtn';
+    const sendBtn   = document.getElementById(sendBtnId);
+    if (sendBtn) {
+        function _ifpSendHandler(e) {
+            const pending = window[`_ifpPending_${chatType}`];
+            if (!pending) return;                   // no pending file — normal send
+            e.stopImmediatePropagation();
+            e.preventDefault();
+            const caption = (document.getElementById(inputId)?.value || '').trim();
+            _dismissInlineFP(chatType);
+            // Clear textarea
+            const ta = document.getElementById(inputId);
+            if (ta) { ta.value = ''; ta.dispatchEvent(new Event('input')); }
+            _uploadFileWithProgress(pending.file, pending.chatType, caption);
+        }
+        sendBtn._ifpHandler = _ifpSendHandler;
+        sendBtn.addEventListener('click', _ifpSendHandler, true);
+    }
+
+    // Allow Enter key in textarea to also send
+    if (textarea) {
+        function _ifpKeyHandler(e) {
+            if (!window[`_ifpPending_${chatType}`]) return;
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                document.getElementById(sendBtnId)?.click();
+            }
+        }
+        textarea._ifpKeyHandler = _ifpKeyHandler;
+        textarea.addEventListener('keydown', _ifpKeyHandler);
+    }
+}
+
+function _dismissInlineFP(chatType) {
+    // Remove bar
+    document.getElementById(`ifpBar_${chatType}`)?.remove();
+
+    // Clear pending
+    window[`_ifpPending_${chatType}`] = null;
+
+    // Restore textarea placeholder
+    const inputId  = chatType === 'group' ? 'groupMsg' : 'msg';
+    const textarea = document.getElementById(inputId);
+    if (textarea) {
+        if (textarea._ifpPrevPlaceholder !== undefined) {
+            textarea.placeholder = textarea._ifpPrevPlaceholder;
+            delete textarea._ifpPrevPlaceholder;
+        }
+        if (textarea._ifpKeyHandler) {
+            textarea.removeEventListener('keydown', textarea._ifpKeyHandler);
+            delete textarea._ifpKeyHandler;
+        }
+    }
+
+    // Remove send-button interceptor
+    const sendBtnId = chatType === 'group' ? 'sendGroupBtn' : 'sendBtn';
+    const sendBtn   = document.getElementById(sendBtnId);
+    if (sendBtn && sendBtn._ifpHandler) {
+        sendBtn.removeEventListener('click', sendBtn._ifpHandler, true);
+        delete sendBtn._ifpHandler;
+    }
+}
+
+window.showFilePreviewModal = showFilePreviewModal;
+window._dismissInlineFP     = _dismissInlineFP;
+
+// ─── Upload Progress Overlay ─────────────────────────────────
+function _uploadFileWithProgress(file, chatType, caption) {
+    // Create progress overlay
+    const prog = document.createElement('div');
+    prog.id = 'uploadProgressOverlay';
+    prog.className = 'upload-progress-overlay';
+    prog.innerHTML = `
+        <div class="upload-progress-card">
+            <div class="upload-prog-top">
+                <div class="upload-prog-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                </div>
+                <div class="upload-prog-info">
+                    <span class="upload-prog-name">${file.name}</span>
+                    <span class="upload-prog-status" id="uploadProgStatus">Uploading…</span>
+                </div>
+            </div>
+            <div class="upload-prog-bar-wrap">
+                <div class="upload-prog-bar" id="uploadProgBar"></div>
+            </div>
+            <div class="upload-prog-pct" id="uploadProgPct">0%</div>
+        </div>
+    `;
+    document.body.appendChild(prog);
+
+    // Animate progress bar (simulated — Drive API doesn't expose XHR progress easily)
+    let pct = 0;
+    const bar = document.getElementById('uploadProgBar');
+    const pctEl = document.getElementById('uploadProgPct');
+    const statusEl = document.getElementById('uploadProgStatus');
+
+    const interval = setInterval(() => {
+        if (pct < 85) {
+            pct += Math.random() * 8 + 2;
+            pct = Math.min(pct, 85);
+            if (bar) bar.style.width = pct + '%';
+            if (pctEl) pctEl.textContent = Math.round(pct) + '%';
+        }
+    }, 400);
+
+    const finishProgress = (success) => {
+        clearInterval(interval);
+        if (bar) bar.style.width = '100%';
+        if (pctEl) pctEl.textContent = '100%';
+        if (statusEl) statusEl.textContent = success ? 'Sent!' : 'Failed';
+        if (bar) bar.style.background = success ? '#22c55e' : '#ef4444';
+        setTimeout(() => { const el = document.getElementById('uploadProgressOverlay'); if(el) el.remove(); }, 1200);
+    };
+
+    // Monkey-patch: intercept uploadFileToDrive result
+    // We call it with a modified ctx that includes caption
+    const origUpload = window._driveUploadFileToDrive || uploadFileToDrive;
+
+    // Store original sendFileMessage / sendGroupFileMessage to inject caption
+    const origCtx = { type: chatType, caption };
+
+    // We directly call via the Drive module — need to pass caption to it
+    // Patch: set window._pendingFileCaption so sendFileMessage picks it up
+    window._pendingFileCaption = caption;
+
+    // Call uploadFileToDrive (defined in driveFileShare.js scope)
+    // We need to reach it — it's exposed indirectly; use the input trick
+    // Actually the cleanest way: dispatch to fileInput which we intercept
+    // But we already intercepted it. So call directly via window if we expose it.
+    // Let's use a custom event approach:
+    const evt = new CustomEvent('startFileUpload', { detail: { file, chatType, caption } });
+    document.dispatchEvent(evt);
+    // If no listener picked it up (fallback), show toast
+    setTimeout(() => {
+        if (document.getElementById('uploadProgressOverlay') === prog) {
+            // Nothing happened — try direct approach
+            finishProgress(false);
+        }
+    }, 30000);
+
+    // Listen for upload done
+    document.addEventListener('fileUploadDone', (e) => {
+        finishProgress(e.detail?.success !== false);
+    }, { once: true });
+}
+
+// Expose for driveFileShare.js
+window.notifyUploadDone = function(success) {
+    document.dispatchEvent(new CustomEvent('fileUploadDone', { detail: { success } }));
+};
+
+window.toggleTbMenu = toggleTbMenu;
+window.closeTbMenu = closeTbMenu;
+window.closeTbMenuAndRun = closeTbMenuAndRun;
+window.triggerAttachFile = triggerAttachFile;
+window.triggerCamera = triggerCamera;
+window.toggleOneTimeViewMenu = toggleOneTimeViewMenu;
+window.triggerVanishMode = triggerVanishMode;
+window.sendLocationMsg = sendLocationMsg;
+window.sendContactMsg = sendContactMsg;
+</script>
+
+
+<!-- Icon Hydration — replace data-icon & data-icon-btn with SVGs -->
+    <script>
+    (function hydrateIcons() {
+        function inject() {
+            if (!window.Icons) return;
+            // Welcome icon
+        const welcomeEl = document.getElementById('welcomeIconEl');
+        if (welcomeEl && Icons) welcomeEl.innerHTML = Icons.get('chat', 28);
+            // (Help & About now uses full-page overlay — no helpChatIcon needed)
+            // Warning icon in leave modal
+            const warnEl = document.querySelector('.leave-warning-icon[data-icon]');
+            if (warnEl && Icons) { warnEl.innerHTML = Icons.get('warning', 48); warnEl.removeAttribute('data-icon'); }
+            document.querySelectorAll('[data-icon]').forEach(el => {
+                const name = el.getAttribute('data-icon');
+                const size = el.id === 'onlineDotSvg' ? 10 : 20;
+                const h = Icons.get(name, size);
+                if (h) { el.innerHTML = h; el.removeAttribute('data-icon'); }
+            });
+            // Buttons with data-icon-btn
+            document.querySelectorAll('[data-icon-btn]').forEach(el => {
+                const name = el.getAttribute('data-icon-btn');
+                const size = el.classList.contains('send-btn') ? 20
+                           : el.classList.contains('voice-record-btn') ? 20
+                           : 20;
+                const html = Icons.get(name, size);
+                if (html) { el.innerHTML = html; el.removeAttribute('data-icon-btn'); }
+            });
+        }
+        // Run now + after app initialised (in case DOM updates happen)
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', inject);
+        } else { inject(); }
+        window.addEventListener('appInitialized', inject);
+        if (window.ThemeManager) ThemeManager.init();
+    })();
+
+    // Share Profile Link in dropdown
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('sdropTheme')?.addEventListener('click', () => { if(window.ThemeManager) ThemeManager.openPanel(); document.getElementById('sidebarDropdown')?.classList.remove('open'); });
+        document.getElementById('sdropShareProfile')?.addEventListener('click', () => {
+            if (window.chatInteractions && window.currentUser) {
+                window.chatInteractions.shareProfileLink(window.currentUser.uid);
+            }
+        });
+
+        document.getElementById('sdropScanQR')?.addEventListener('click', () => {
+            document.getElementById('sidebarDropdown')?.classList.remove('open');
+            window.QRManager?.openScannerModal();
+        });
+
+        // Share Group Link button in group chat header
+        document.getElementById('shareGroupBtn')?.addEventListener('click', () => {
+            if (window.chatInteractions && window.getActiveGroupID()) {
+                const name = document.getElementById('groupChatName')?.textContent || 'Group';
+                window.chatInteractions.shareGroupLink(window.getActiveGroupID(), name);
+            }
+        });
+    });
+    </script>
+
+    <!-- 
+        FIX: Browser Autoplay Policy — Audio Unlock
+        Browser లో audio play చేయాలంటే first user interaction అవసరం.
+        App load తర్వాత user first click/touch చేసినప్పుడు AudioContext unlock చేసి,
+        ring.mp3 ని silently play+pause చేస్తాం — తర్వాత call వచ్చినప్పుడు play అవుతుంది.
+    -->
+    <script>
+    (function unlockAudioOnFirstInteraction() {
+        var unlocked = false;
+        function unlock() {
+            if (unlocked) return;
+            unlocked = true;
+            try {
+                var ctx = new (window.AudioContext || window.webkitAudioContext)();
+                var buf = ctx.createBuffer(1, 1, 22050);
+                var src = ctx.createBufferSource();
+                src.buffer = buf;
+                src.connect(ctx.destination);
+                src.start(0);
+                window._unlockedAudioContext = ctx;
+                console.log('🔓 AudioContext unlocked for ring audio');
+            } catch(e) { console.warn('AudioContext unlock failed:', e); }
+            var ring = document.getElementById('ringSound');
+            if (ring) {
+                ring.volume = 0;
+                ring.play().then(function() {
+                    ring.pause();
+                    ring.currentTime = 0;
+                    ring.volume = 1;
+                    console.log('🔓 ring.mp3 pre-unlocked — calls will ring now');
+                }).catch(function() { ring.volume = 1; });
+            }
+            document.removeEventListener('click', unlock, true);
+            document.removeEventListener('touchstart', unlock, true);
+            document.removeEventListener('keydown', unlock, true);
+        }
+        document.addEventListener('click', unlock, true);
+        document.addEventListener('touchstart', unlock, true);
+        document.addEventListener('keydown', unlock, true);
+    })();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,639 @@
+/* Call Interface Styles */
+.call-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    color: white;
+}
+
+.call-header {
+    text-align: center;
+    width: 100%;
+    padding: 20px;
+}
+
+.call-header h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.5rem;
+    color: #e2e8f0;
+}
+
+.call-timer {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #48bb78;
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remote-video {
+    width: 100%;
+    height: 100%;
+    max-height: 70vh;
+    object-fit: cover;
+    border-radius: 12px;
+    background: #2d3748;
+}
+
+.local-video {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #4299e1;
+    background: #4a5568;
+    transform: scaleX(-1); /* un-mirror front camera */
+}
+
+.voice-call-display {
+    text-align: center;
+    padding: 40px;
+}
+
+.user-avatar.large {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #4299e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    margin: 0 auto 20px;
+    color: white;
+}
+
+.call-status {
+    color: #48bb78;
+    font-size: 1.1rem;
+    margin-top: 10px;
+}
+
+.call-controls {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+.call-btn {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Ensure SVG icons inside call buttons are visible */
+.call-btn svg.icon {
+    width: 24px !important;
+    height: 24px !important;
+    display: block;
+    flex-shrink: 0;
+}
+
+.call-btn span[data-icon],
+.call-btn span:not([data-icon]) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    font-size: 1.4rem;
+}
+
+.call-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.call-btn:active {
+    transform: scale(0.95);
+}
+
+.accept-call { 
+    background: #48bb78; 
+    color: white; 
+}
+
+.decline-call { 
+    background: #e53e3e; 
+    color: white; 
+}
+
+.end-call { 
+    background: #e53e3e; 
+    color: white; 
+}
+
+.mute-audio, .mute-video, .switch-camera { 
+    background: #718096; 
+    color: white; 
+}
+
+.mute-audio.muted, .mute-video.muted {
+    background: #e53e3e;
+}
+
+/* Incoming Call Styles */
+.incoming-call-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.incoming-call-modal {
+    background: white;
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    width: 90%;
+}
+
+.caller-info {
+    margin-bottom: 30px;
+}
+
+.caller-avatar.large {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #4299e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin: 0 auto 20px;
+    color: white;
+}
+
+.incoming-call-modal h3 {
+    margin: 0 0 10px 0;
+    color: #2d3748;
+    font-size: 1.5rem;
+}
+
+.incoming-call-modal p {
+    color: #718096;
+    margin: 0;
+}
+
+.incoming-call-controls {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+}
+
+.incoming-call-controls .call-btn {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+}
+
+/* Call Buttons in Chat */
+.call-buttons {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.chat-call-btn {
+    background: none;
+    border: 2px solid #4299e1;
+    color: #4299e1;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.chat-call-btn:hover {
+    background: #4299e1;
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .call-container {
+        padding: 10px;
+    }
+    
+    .local-video {
+        width: 120px;
+        height: 90px;
+        bottom: 10px;
+        right: 10px;
+    }
+    
+    .call-controls {
+        gap: 15px;
+    }
+    
+    .call-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 1.3rem;
+    }
+    
+    .incoming-call-modal {
+        padding: 30px 20px;
+    }
+    
+    .incoming-call-controls .call-btn {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+/* Animation for incoming call */
+@keyframes pulse-ring {
+    0% { transform: scale(0.8); opacity: 1; }
+    80%, 100% { transform: scale(2); opacity: 0; }
+}
+
+.incoming-call-modal .caller-avatar {
+    position: relative;
+}
+
+.incoming-call-modal .caller-avatar::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border: 2px solid #4299e1;
+    border-radius: 50%;
+    animation: pulse-ring 2s infinite;
+}
+/* ============================================================
+   VIDEO CALL — FULL SIZE FIX (laptop + mobile, no cut-off)
+   ============================================================ */
+
+/* Full viewport, no overflow */
+.call-container {
+    padding: 0;
+    overflow: hidden;
+}
+
+/* Video container fills all available space between header and controls */
+.video-container {
+    flex: 1;
+    min-height: 0;          /* allow flex shrink */
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    padding: 0 12px;
+    box-sizing: border-box;
+}
+
+/* Remote video: fills container completely without cut */
+.remote-video {
+    width: 100%;
+    height: 100%;
+    max-height: none;        /* remove old 70vh cap */
+    object-fit: contain;     /* contain = no cut, letterbox if needed */
+    border-radius: 0;
+    background: #1a202c;
+}
+
+/* Local (self) video: pip corner */
+.local-video {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    width: 160px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid #4299e1;
+    background: #2d3748;
+    z-index: 10;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    transform: scaleX(-1); /* un-mirror front camera */
+}
+
+/* Header compact */
+.call-header {
+    padding: 14px 20px 10px;
+    flex-shrink: 0;
+}
+
+/* Controls always visible at bottom */
+.call-controls {
+    flex-shrink: 0;
+    padding: 14px 20px;
+    padding-bottom: max(14px, env(safe-area-inset-bottom));
+    background: rgba(0,0,0,0.3);
+    width: 100%;
+    justify-content: center;
+}
+
+/* ── Mobile: tighter pip ── */
+@media (max-width: 599px) {
+    .local-video {
+        width: 100px;
+        height: 75px;
+        bottom: 10px;
+        right: 10px;
+        border-radius: 8px;
+    }
+
+    .call-header {
+        padding: 10px 14px 6px;
+        padding-top: max(10px, env(safe-area-inset-top));
+    }
+
+    .call-header h3 {
+        font-size: 1.1rem;
+    }
+
+    .call-timer {
+        font-size: 0.95rem;
+    }
+
+    .call-btn {
+        width: 56px;
+        height: 56px;
+        font-size: 1.2rem;
+    }
+
+    .call-controls {
+        gap: 12px;
+        padding: 10px 12px;
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
+    }
+}
+
+/* ── Screen Share Button ───────────────────────────────────── */
+.call-btn.screen-share {
+    background: #718096;
+    position: relative;
+}
+
+.call-btn.screen-share:hover {
+    background: #4a5568;
+    transform: scale(1.1);
+}
+
+.call-btn.screen-share.active {
+    background: #38a169;
+    box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.4);
+}
+
+/* ============================================================
+   Add Member to 1-1 Call — Button & Friend Picker Modal
+   ============================================================ */
+
+/* Add-member button in call controls */
+.call-btn.add-member {
+    background: #4299e1;
+    color: white;
+    position: relative;
+}
+.call-btn.add-member:hover {
+    background: #3182ce;
+}
+
+/* Friend picker modal overlay */
+.add-member-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 20000;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    animation: amFadeIn 0.18s ease;
+}
+@keyframes amFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.add-member-sheet {
+    background: #1a202c;
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    max-width: 480px;
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: amSlideUp 0.22s ease;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@keyframes amSlideUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+}
+
+.add-member-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid #2d3748;
+    flex-shrink: 0;
+}
+.add-member-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+.add-member-close {
+    background: none;
+    border: none;
+    color: #718096;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+.add-member-close:hover { color: #e2e8f0; background: #2d3748; }
+
+.add-member-search {
+    padding: 12px 16px;
+    flex-shrink: 0;
+}
+.add-member-search input {
+    width: 100%;
+    background: #2d3748;
+    border: 1px solid #4a5568;
+    border-radius: 10px;
+    color: #e2e8f0;
+    padding: 10px 14px;
+    font-size: 0.92rem;
+    outline: none;
+    box-sizing: border-box;
+}
+.add-member-search input:focus {
+    border-color: #4299e1;
+}
+.add-member-search input::placeholder { color: #718096; }
+
+.add-member-list {
+    overflow-y: auto;
+    flex: 1;
+    padding: 8px 0;
+}
+
+.am-friend-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background 0.12s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    color: #e2e8f0;
+}
+.am-friend-item:hover {
+    background: #2d3748;
+}
+.am-friend-item:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.am-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #4299e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    color: white;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+.am-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.am-info { flex: 1; min-width: 0; }
+.am-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.am-status {
+    font-size: 0.78rem;
+    color: #718096;
+    margin-top: 2px;
+}
+.am-invite-badge {
+    font-size: 0.75rem;
+    background: #4299e1;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+.am-invited-badge {
+    font-size: 0.75rem;
+    background: #2d3748;
+    color: #718096;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.add-member-empty {
+    text-align: center;
+    color: #718096;
+    padding: 32px 16px;
+    font-size: 0.9rem;
+}
+
+/* Upgrade banner shown in call header when someone is being invited */
+.am-invite-toast {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2d3748;
+    color: #e2e8f0;
+    font-size: 0.82rem;
+    padding: 6px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    z-index: 10;
+}
+
+/* ============================================================
+   Speaker / Audio Output Toggle Button (1-to-1 calls)
+   ============================================================ */
+
+/* Default state: video call = loudspeaker (green), audio call mobile = earpiece (grey) */
+.call-btn.speaker-toggle {
+    background: #38a169;  /* green = speaker active */
+    color: white;
+    position: relative;
+}
+
+.call-btn.speaker-toggle:hover {
+    background: #2f855a;
+    transform: scale(1.1);
+}
+
+/* When in earpiece mode (active = not speaker) */
+.call-btn.speaker-toggle.earpiece-mode {
+    background: #718096;
+}
+
+.call-btn.speaker-toggle.earpiece-mode:hover {
+    background: #4a5568;
+}

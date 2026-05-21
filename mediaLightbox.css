@@ -1,0 +1,217 @@
+/* ============================================================
+   mediaLightbox.css — Full-screen image/video lightbox
+   ============================================================ */
+
+.mlb-root {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+}
+.mlb-root.mlb-visible {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Backdrop */
+.mlb-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.92);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+/* Container */
+.mlb-container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    max-width: 1200px;
+    padding: 56px 64px 56px;
+    box-sizing: border-box;
+}
+
+/* Stage — holds the image/video */
+.mlb-stage {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Image */
+.mlb-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 6px;
+    user-select: none;
+    transition: transform 0.2s ease;
+    cursor: zoom-in;
+    display: none;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+}
+.mlb-img.mlb-zoomed {
+    transform: scale(2);
+    cursor: zoom-out;
+    transform-origin: center center;
+}
+
+/* Video */
+.mlb-video {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 6px;
+    display: none;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+}
+
+/* iframe (PDF / Drive video embed) */
+.mlb-iframe {
+    display: none;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 6px;
+    background: #1a1a1a;
+}
+
+/* Spinner */
+.mlb-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255,255,255,0.15);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: mlb-spin 0.7s linear infinite;
+    display: none;
+}
+@keyframes mlb-spin { to { transform: rotate(360deg); } }
+
+/* Buttons */
+.mlb-btn {
+    position: absolute;
+    background: rgba(255,255,255,0.12);
+    border: none;
+    color: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, transform 0.12s;
+    -webkit-tap-highlight-color: transparent;
+    z-index: 2;
+}
+.mlb-btn:hover {
+    background: rgba(255,255,255,0.25);
+    transform: scale(1.08);
+}
+
+/* Close button */
+.mlb-close {
+    top: 12px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+}
+
+/* Nav arrows */
+.mlb-nav {
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+}
+.mlb-nav:hover { transform: translateY(-50%) scale(1.1); }
+.mlb-prev { left: 12px; }
+.mlb-next { right: 12px; }
+
+/* Footer */
+.mlb-footer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0 0;
+    gap: 12px;
+}
+.mlb-caption {
+    color: rgba(255,255,255,0.75);
+    font-size: 13px;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.mlb-footer-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+}
+.mlb-counter {
+    color: rgba(255,255,255,0.5);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+}
+.mlb-download {
+    color: rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    padding: 6px;
+    border-radius: 6px;
+    transition: color 0.15s, background 0.15s;
+    text-decoration: none;
+}
+.mlb-download:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.12);
+}
+
+/* ── Mobile ────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+    .mlb-container {
+        padding: 52px 44px 48px;
+    }
+    .mlb-prev { left: 4px; }
+    .mlb-next { right: 4px; }
+    .mlb-nav  { width: 36px; height: 36px; }
+    .mlb-close { top: 10px; right: 10px; }
+}
+
+/* ── Chat image — make it look like a thumbnail, not full ─── */
+.file-msg-image {
+    cursor: pointer !important;
+}
+
+/* ── Mobile touch improvements ──────────────────────────────── */
+.mlb-root {
+    /* Ensure lightbox is above everything on mobile */
+    -webkit-overflow-scrolling: touch;
+}
+.mlb-container {
+    /* Prevent accidental dismiss on scroll */
+    touch-action: pan-y pinch-zoom;
+}
+.file-msg-image {
+    /* Make sure tap target is obvious on mobile */
+    -webkit-tap-highlight-color: rgba(124,58,237,0.15);
+    cursor: pointer;
+}
+.file-action-btn {
+    /* Better tap target size on mobile */
+    min-height: 36px;
+    min-width: 36px;
+    -webkit-tap-highlight-color: transparent;
+}

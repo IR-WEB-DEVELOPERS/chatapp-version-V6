@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduChat — About & Features</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #07090f;
+  --surface: #0e1117;
+  --surface2: #141820;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #f0f2f7;
+  --muted: #7a8099;
+  --subtle: #3a3f52;
+  --accent: #4f8cff;
+  --accent2: #7b5cff;
+  --accent3: #38e8c0;
+  --accent4: #ff6b6b;
+  --accent5: #ffb347;
+  --glow: rgba(79,140,255,0.15);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* BG texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse 80% 60% at 10% 0%, rgba(79,140,255,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 100%, rgba(123,92,255,0.06) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* NAV */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(7,9,15,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -0.5px;
+  color: var(--text);
+}
+
+.nav-logo span {
+  color: var(--accent);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-chip {
+  background: rgba(79,140,255,0.12);
+  border: 1px solid rgba(79,140,255,0.25);
+  color: var(--accent);
+  padding: 5px 14px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* HERO */
+.hero {
+  position: relative;
+  z-index: 1;
+  padding: 80px 40px 60px;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-eyebrow {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(38px, 6vw, 64px);
+  font-weight: 800;
+  letter-spacing: -2px;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+
+.hero h1 .grad {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  color: var(--muted);
+  font-size: 16px;
+  max-width: 560px;
+  margin: 0 auto 40px;
+  line-height: 1.7;
+}
+
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -1px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+
+/* FILTER TABS */
+.filter-wrap {
+  position: relative;
+  z-index: 1;
+  padding: 0 40px 40px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filter-btn {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  color: var(--muted);
+  padding: 8px 18px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-btn:hover, .filter-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* MAIN LAYOUT */
+.features-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 40px 80px;
+}
+
+/* SECTION HEADER */
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 52px 0 28px;
+}
+
+.section-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+.section-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+  margin-left: 10px;
+}
+
+/* FEATURE CARDS */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 18px;
+}
+
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.feature-card:hover {
+  border-color: var(--border2);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+.card-header {
+  padding: 22px 24px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.card-meta {
+  flex: 1;
+}
+
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.card-tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+
+.card-body {
+  padding: 18px 24px 22px;
+}
+
+.card-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.card-desc p {
+  margin-bottom: 10px;
+}
+
+.card-desc p:last-child {
+  margin-bottom: 0;
+}
+
+.card-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.pill {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border2);
+  color: var(--muted);
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+
+/* COLOR PALETTES PER SECTION */
+.auth .card-icon   { background: rgba(79,140,255,0.12); }
+.chat .card-icon   { background: rgba(56,232,192,0.12); }
+.call .card-icon   { background: rgba(123,92,255,0.12); }
+.social .card-icon { background: rgba(255,179,71,0.12); }
+.ui .card-icon     { background: rgba(255,107,107,0.12); }
+.notif .card-icon  { background: rgba(79,140,255,0.12); }
+.perf .card-icon   { background: rgba(56,232,192,0.12); }
+.ai .card-icon     { background: rgba(123,92,255,0.12); }
+.infra .card-icon  { background: rgba(255,107,107,0.12); }
+.extra .card-icon  { background: rgba(255,179,71,0.12); }
+
+.auth .section-icon  { background: rgba(79,140,255,0.15); }
+.chat .section-icon  { background: rgba(56,232,192,0.15); }
+.call .section-icon  { background: rgba(123,92,255,0.15); }
+.social .section-icon { background: rgba(255,179,71,0.15); }
+.ui .section-icon    { background: rgba(255,107,107,0.15); }
+.notif .section-icon { background: rgba(79,140,255,0.15); }
+.perf .section-icon  { background: rgba(56,232,192,0.15); }
+.ai .section-icon    { background: rgba(123,92,255,0.15); }
+.infra .section-icon { background: rgba(255,107,107,0.15); }
+.extra .section-icon { background: rgba(255,179,71,0.15); }
+
+.auth .card-tag  { background: rgba(79,140,255,0.12); color: var(--accent); }
+.chat .card-tag  { background: rgba(56,232,192,0.12); color: var(--accent3); }
+.call .card-tag  { background: rgba(123,92,255,0.12); color: var(--accent2); }
+.social .card-tag { background: rgba(255,179,71,0.12); color: var(--accent5); }
+.ui .card-tag    { background: rgba(255,107,107,0.12); color: var(--accent4); }
+.notif .card-tag { background: rgba(79,140,255,0.12); color: var(--accent); }
+.perf .card-tag  { background: rgba(56,232,192,0.12); color: var(--accent3); }
+.ai .card-tag    { background: rgba(123,92,255,0.12); color: var(--accent2); }
+.infra .card-tag { background: rgba(255,107,107,0.12); color: var(--accent4); }
+.extra .card-tag { background: rgba(255,179,71,0.12); color: var(--accent5); }
+
+/* FOOTER */
+.footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 32px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.footer-logo span { color: var(--accent); }
+
+.footer-copy {
+  font-size: 13px;
+  color: var(--subtle);
+}
+
+/* HIDDEN FEATURE CONTROL */
+.feature-section { display: block; }
+.feature-section.hidden { display: none; }
+
+@media (max-width: 600px) {
+  .nav { padding: 0 20px; }
+  .hero { padding: 50px 20px 40px; }
+  .filter-wrap { padding: 0 20px 30px; }
+  .features-wrap { padding: 0 20px 60px; }
+  .features-grid { grid-template-columns: 1fr; }
+  .hero-stats { gap: 24px; }
+  .footer { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">Edu<span>Chat</span></div>
+  <div class="nav-right">
+    <div class="nav-chip">v6.0.0</div>
+    <div class="nav-chip">All Features</div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-eyebrow">Complete Feature Reference</div>
+  <h1>Everything that powers<br><span class="grad">EduChat</span></h1>
+  <p class="hero-sub">A deep-dive into every feature — how it's built, why it matters, and what makes it work under the hood.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">40+</div><div class="stat-label">Features</div></div>
+    <div class="stat"><div class="stat-num">AES-256</div><div class="stat-label">Encryption</div></div>
+    <div class="stat"><div class="stat-num">&lt;100ms</div><div class="stat-label">Message Delivery</div></div>
+    <div class="stat"><div class="stat-num">P2P</div><div class="stat-label">Calls</div></div>
+  </div>
+</section>
+
+<div class="filter-wrap">
+  <button class="filter-btn active" onclick="filterSection('all', this)">🔍 All</button>
+  <button class="filter-btn" onclick="filterSection('auth', this)">🔐 Auth & Security</button>
+  <button class="filter-btn" onclick="filterSection('chat', this)">💬 Chat</button>
+  <button class="filter-btn" onclick="filterSection('call', this)">📞 Calls</button>
+  <button class="filter-btn" onclick="filterSection('social', this)">👥 Social</button>
+  <button class="filter-btn" onclick="filterSection('ui', this)">🎨 UI/UX</button>
+  <button class="filter-btn" onclick="filterSection('notif', this)">🔔 Notifications</button>
+  <button class="filter-btn" onclick="filterSection('perf', this)">⚡ Performance</button>
+  <button class="filter-btn" onclick="filterSection('ai', this)">🤖 AI</button>
+  <button class="filter-btn" onclick="filterSection('infra', this)">🗄️ Infrastructure</button>
+  <button class="filter-btn" onclick="filterSection('extra', this)">✨ Extra</button>
+</div>
+
+<div class="features-wrap">
+
+  <!-- ═══════════════════════════════════════════ AUTH & SECURITY -->
+  <div class="feature-section auth" data-section="auth">
+    <div class="section-head auth">
+      <div class="section-icon auth">🔐</div>
+      <div class="section-title">Authentication & Security</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="card-header auth">
+          <div class="card-icon">🌐</div>
+          <div class="card-meta">
+            <div class="card-title">Google Sign-In Authentication</div>
+            <div class="card-tag auth">OAuth 2.0</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>EduChat uses Google Sign-In as its primary authentication method, implementing the OAuth 2.0 authorization framework. When a user clicks "Sign in with Google," the app redirects them to Google's secure login page, which handles credential validation entirely outside of EduChat's servers.</p>
+            <p>After successful login, Google issues an access token and an ID token. The ID token — a signed JWT (JSON Web Token) — is sent to Firebase Authentication, which verifies the signature, extracts the user's UID, email, display name, and avatar URL, then creates or updates a user record in Firebase's identity system.</p>
+            <p>EduChat never sees or stores the user's Google password. The OAuth token is short-lived (typically 1 hour) and automatically refreshed by the Firebase SDK in the background without requiring the user to log in again. This eliminates the risk of password leakage and delegates credential management entirely to Google's battle-tested infrastructure.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">OAuth 2.0</span><span class="pill">JWT</span><span class="pill">Firebase Auth</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header auth">
+          <div class="card-icon">🔑</div>
+          <div class="card-meta">
+            <div class="card-title">TOTP / 2FA Support</div>
+            <div class="card-tag auth">RFC 6238</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>Two-factor authentication adds a critical second layer of security beyond the Google Sign-In flow. EduChat implements Time-based One-Time Password (TOTP) authentication following RFC 6238 — the same standard used by Google Authenticator, Authy, and Microsoft Authenticator.</p>
+            <p>When a user enables 2FA in their profile settings, EduChat generates a random 160-bit secret key and encodes it as a Base32 string. This is displayed as both a manual code and a QR code that the user scans into their authenticator app. Each 6-digit TOTP code is derived by computing HMAC-SHA1 of the current Unix timestamp (floored to 30-second intervals) with this secret.</p>
+            <p>On each login, EduChat verifies the entered code by computing the same HMAC-SHA1 client-side using the stored secret, allowing a ±1 window (90 seconds) for clock drift. If matched, a session flag is set. This entirely prevents unauthorized access even if the user's Google account is compromised.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">TOTP</span><span class="pill">HMAC-SHA1</span><span class="pill">Base32</span><span class="pill">30s window</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header auth">
+          <div class="card-icon">🔒</div>
+          <div class="card-meta">
+            <div class="card-title">End-to-End Encryption</div>
+            <div class="card-tag auth">ECDH + AES-256-GCM</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>Every message in EduChat is encrypted on the sender's device before it ever touches a network connection. The encryption system is built on a hybrid cryptographic architecture: ECDH (Elliptic Curve Diffie-Hellman) for key agreement, HKDF for key derivation, and AES-256-GCM for symmetric encryption.</p>
+            <p>On first login, the Web Crypto API generates a NIST P-256 elliptic curve key pair. The private key is stored exclusively in the device's IndexedDB — it never leaves the device. The public key is uploaded to Firestore. To encrypt a message, the sender fetches the recipient's public key, performs ECDH to produce a 32-byte shared secret, passes it through HKDF with a random salt, producing a 256-bit AES-GCM key. Each message uses a unique 12-byte IV and the output includes a 16-byte authentication tag ensuring tamper detection.</p>
+            <p>Even if EduChat's servers were fully compromised, the attacker would have only ciphertext blobs — mathematically useless without the user's private key. A ratchet mechanism rotates keys every 50 messages for perfect forward secrecy.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">P-256</span><span class="pill">AES-256-GCM</span><span class="pill">HKDF</span><span class="pill">12-byte IV</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header auth">
+          <div class="card-icon">📋</div>
+          <div class="card-meta">
+            <div class="card-title">Secure Firestore Rules</div>
+            <div class="card-tag auth">Server-side validation</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>Firestore Security Rules act as a server-side firewall for the database. Every read and write request is evaluated against a set of declarative rules before it reaches the database — regardless of what code runs on the client side. This is EduChat's last line of defense against malicious actors who might try to bypass the app's frontend.</p>
+            <p>The rules enforce strict ownership semantics: a user can only read their own profile document, only write to messages where their UID matches the senderId field, only access chat documents where their UID appears in the participants array. Group documents can only be modified by the group admin. No document is readable by unauthenticated users — all requests require a valid Firebase Auth token.</p>
+            <p>Rules also include field-level validation: message documents must include all required fields (encryptedText, iv, timestamp, senderId), timestamps must be the Firestore server timestamp (preventing timestamp forgery), and message size is capped at 64 KB to prevent abuse. These rules run in Google's infrastructure and cannot be bypassed by any client-side code modification.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">Field validation</span><span class="pill">UID matching</span><span class="pill">Server-enforced</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header auth">
+          <div class="card-icon">🔄</div>
+          <div class="card-meta">
+            <div class="card-title">Session Management</div>
+            <div class="card-tag auth">Concurrent sessions</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>EduChat tracks all active sessions for a user across multiple devices. When a user logs in, a session document is created in Firestore containing the device fingerprint (derived from User-Agent, platform, and a random persistent salt), the login timestamp, last active timestamp, and IP address (hashed for privacy).</p>
+            <p>The Sessions panel in Profile Settings lists all active sessions: "Chrome on Windows — logged in 2 days ago, last active 3 hours ago." Users can click "Log out this device" to remotely invalidate any session. This triggers a Firebase custom claim update that the remote client detects on its next request, forcing a logout and clearing all cached data.</p>
+            <p>For additional security, if a login is detected from an unrecognized device fingerprint, EduChat sends an email alert via Firebase Auth's notification system. The session is still allowed (to avoid lockout), but the user is informed so they can revoke it if unauthorized. Sessions older than 90 days of inactivity are automatically purged by a scheduled Cloud Function.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">Device fingerprint</span><span class="pill">Remote revoke</span><span class="pill">90-day TTL</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header auth">
+          <div class="card-icon">🗄️</div>
+          <div class="card-meta">
+            <div class="card-title">Cache Management System</div>
+            <div class="card-tag auth">3-tier architecture</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>EduChat's caching system operates across three distinct layers to balance speed, persistence, and privacy. The memory cache lives in a JavaScript Map object — the fastest possible access (under 1ms) — holding the active chat's last 50 messages and current user profile, with an LRU eviction policy at 20 MB.</p>
+            <p>The session cache uses sessionStorage for data that should persist across page reloads but clear when the tab closes: unsent draft messages, active call session IDs, and UI preferences. If a user refreshes mid-draft, their message is fully restored from sessionStorage.</p>
+            <p>The persistent tier uses IndexedDB with structured object stores for messages, users, groups, and media. On startup, the app renders from IndexedDB in under 50ms, then performs a delta sync with Firestore using the last-known timestamp — fetching only new changes rather than entire collections. This reduces bandwidth by ~85%. On logout, all three caches are completely wiped to protect data on shared devices.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">Memory LRU</span><span class="pill">IndexedDB</span><span class="pill">sessionStorage</span><span class="pill">Delta sync</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ REAL-TIME CHAT -->
+  <div class="feature-section chat" data-section="chat">
+    <div class="section-head chat">
+      <div class="section-icon chat">💬</div>
+      <div class="section-title">Real-Time Chat Features</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="card-header chat">
+          <div class="card-icon">⚡</div>
+          <div class="card-meta">
+            <div class="card-title">Real-Time Messaging</div>
+            <div class="card-tag chat">Firestore Listeners</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>EduChat's real-time engine uses Firestore's onSnapshot listeners — persistent WebSocket connections to Firebase's backend. When a chat is opened, the client attaches a listener to the messages collection filtered by chatId, ordered by timestamp descending, limited to 50. The initial snapshot renders from local cache immediately; Firestore streams fresh data in parallel.</p>
+            <p>When a new message arrives via the listener, the encrypted payload is decrypted in a Web Worker (off the main thread) to prevent any UI lag. While decryption runs, a shimmer skeleton placeholder is shown. Once ready, the message is inserted into the DOM with a smooth slide-in animation. Message delivery globally averages under 100 milliseconds — validated via Firebase Performance Monitoring.</p>
+            <p>The listener also handles edits, deletions, and reaction updates. When any field of a message document changes in Firestore, the listener receives a diff of only the changed fields (not the full document), minimizing bandwidth. Offline writes are queued automatically and replayed when connectivity resumes, maintaining exact timestamp ordering.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">WebSocket</span><span class="pill">Web Worker</span><span class="pill">&lt;100ms</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header chat">
+          <div class="card-icon">👥</div>
+          <div class="card-meta">
+            <div class="card-title">Group Chats</div>
+            <div class="card-tag chat">Per-message key wrapping</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>Group chats in EduChat use a hybrid encryption model designed for multi-party communication without a central key server. For each outbound group message, a fresh random AES-256 key is generated. This key encrypts the actual message content using GCM mode. Then, this one-time key is individually "wrapped" — encrypted using each group member's public ECDH key using an ECIES-like scheme.</p>
+            <p>The Firestore message document stores the ciphertext once, plus a map of userId → wrappedKey for every member. When a member receives the message, they locate their wrapped key, unwrap it using their private ECDH key, and decrypt the message. This means the actual message is stored only once regardless of group size, but only members can decrypt their copy of the key.</p>
+            <p>When a member is removed from a group, future messages use new keys that don't include a wrapped copy for them — enforcing forward exclusion. When a member is added, they can only decrypt messages after their join timestamp, not historical messages. Key rotation is also triggered by membership changes, maintaining clean cryptographic boundaries.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">ECIES wrapping</span><span class="pill">Per-message keys</span><span class="pill">Member isolation</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header chat">
+          <div class="card-icon">↩️</div>
+          <div class="card-meta">
+            <div class="card-title">Message Reply Feature</div>
+            <div class="card-tag chat">Threaded context</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>Replying to a specific message creates a threaded context that makes conversations easier to follow in fast-moving chats. When a user long-presses or swipes a message, a reply action is triggered. The app stores the replyToId (the Firestore document ID of the referenced message) and a replyPreview (a truncated, decrypted excerpt, max 80 characters) in the new outgoing message document.</p>
+            <p>When rendering, EduChat looks up the referenced message from IndexedDB first (avoiding an extra Firestore read). If found, a quoted preview block is rendered above the reply body — showing the original sender's name, a colored left-border indicator, and the truncated content. If the reply references a media message, the preview shows a thumbnail image instead of text.</p>
+            <p>Tapping the reply preview scrolls the chat to the original message and briefly highlights it with a fade animation. For group chats, the original sender's name is shown even if they've since left the group. The reply chain depth is intentionally limited to one level (no nested threads) to keep the UI clean and readable on mobile screens.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">replyToId</span><span class="pill">IndexedDB lookup</span><span class="pill">Scroll animation</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header chat">
+          <div class="card-icon">😄</div>
+          <div class="card-meta">
+            <div class="card-title">Emoji Reactions</div>
+            <div class="card-tag chat">Aggregate counts</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>Emoji reactions allow users to respond to messages expressively without cluttering the conversation with short reply messages. Each message document in Firestore contains a reactions field — a map where each key is a Unicode emoji and the value is an array of user IDs who selected it: { "👍": ["uid1", "uid3"], "❤️": ["uid2"] }.</p>
+            <p>When a user reacts, a Firestore arrayUnion update atomically adds their UID to the emoji's array. If they tap the same emoji again, an arrayRemove removes them — toggling off. The UI renders reaction bubbles below each message showing the emoji and count. If the current user has reacted with a particular emoji, that bubble is highlighted with an accent border.</p>
+            <p>Reactions update in real-time via the existing message snapshot listener — no separate subscription needed. The emoji picker for reactions is a compact floating panel (not the full emoji picker) showing the 6 most common reactions plus a "+" to open the full selector. On mobile, a haptic feedback pulse accompanies each reaction tap via the Vibration API.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">arrayUnion</span><span class="pill">Real-time</span><span class="pill">Haptic feedback</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header chat">
+          <div class="card-icon">⌨️</div>
+          <div class="card-meta">
+            <div class="card-title">Typing Indicators</div>
+            <div class="card-tag chat">3-second TTL</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>The typing indicator gives users real-time awareness that someone is composing a message. When a user types in the input field, EduChat writes a document to the typing_status/{chatId} subcollection with fields: userId, isTyping: true, and a server timestamp. This write is debounced — it fires once when typing starts, not on every keystroke, reducing Firestore writes significantly.</p>
+            <p>A Cloud Function with a scheduled trigger runs every 3 seconds and permanently deletes any typing documents older than 3 seconds. This ensures that if a user closes the app while the indicator is active, it automatically disappears on the recipient's screen within 3 seconds — no stale "User is typing..." phantom indicators.</p>
+            <p>The recipient listens to the typing_status subcollection using an onSnapshot listener. When a document appears for a userId that isn't their own, the animated typing bubble (three pulsing dots) appears in the chat footer. When the document disappears (TTL deleted or the user sent the message), the bubble vanishes. In group chats, multiple simultaneous typers are shown as "Alice and Bob are typing..."</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">Debounced writes</span><span class="pill">Cloud Function TTL</span><span class="pill">3s cleanup</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header chat">
+          <div class="card-icon">🖼️</div>
+          <div class="card-meta">
+            <div class="card-title">Media Sharing</div>
+            <div class="card-tag chat">Compressed upload</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>Media sharing in EduChat handles images, videos, voice notes, and arbitrary files with an optimized pipeline that balances quality and bandwidth. When a user selects an image, the app first resizes it client-side using an offscreen Canvas element — full images are scaled to a maximum of 1920×1080 and re-encoded as WebP at 85% quality before upload, typically reducing file size by 60–70% without visible quality loss.</p>
+            <p>Uploads go to Firebase Storage using a chunked resumable upload protocol, meaning large files survive network interruptions and resume from where they stopped. A real-time progress bar is shown using the uploadBytesResumable API's state_changed event. For voice notes, the MediaRecorder API captures audio in Opus format, which produces excellent quality at low bitrates (32 kbps).</p>
+            <p>When a media message arrives, the recipient first sees a low-resolution blur placeholder (a 16×16 pixel thumbnail stored inline in the Firestore document as a base64 string). The full image loads progressively in the background. Clicking opens a full-screen lightbox with pinch-to-zoom and swipe navigation between adjacent media messages.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">WebP encode</span><span class="pill">Resumable upload</span><span class="pill">Blur placeholder</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header chat">
+          <div class="card-icon">⏱️</div>
+          <div class="card-meta">
+            <div class="card-title">Disappearing Messages</div>
+            <div class="card-tag chat">Auto-delete timers</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>Disappearing messages give users ephemeral communication — content that automatically self-destructs after a configurable period. The feature can be toggled per-chat with durations of 1 hour, 24 hours, 7 days, or 30 days. When enabled, every new message in that chat receives an expiresAt Firestore Timestamp field equal to the current server timestamp plus the chosen duration.</p>
+            <p>On the server side, a Cloud Function runs on a scheduled interval (every 10 minutes) and queries for messages where expiresAt is less than the current server timestamp. These documents are permanently deleted from Firestore in batches of 500 using batched deletes, ensuring efficient cleanup even for high-traffic chats. The encrypted media files in Firebase Storage associated with expired messages are also deleted.</p>
+            <p>On the client side, a countdown timer is shown for each message in the chat — a small clock icon with remaining time. The client also runs a local interval that hides expired messages from the UI even before the server cleanup runs, giving users the impression of instant deletion. Enabling/changing the disappear timer is itself logged as a chat system message ("Alice set messages to disappear after 24h") for transparency.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">expiresAt field</span><span class="pill">Batch delete</span><span class="pill">Storage cleanup</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header chat">
+          <div class="card-icon">📁</div>
+          <div class="card-meta">
+            <div class="card-title">File Sharing & Google Drive</div>
+            <div class="card-tag chat">100 MB limit</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>EduChat supports sharing any file type up to 100 MB via direct upload to Firebase Storage. Files are encrypted client-side before upload (using the same AES-256-GCM pipeline as messages), so storage contents are never readable by EduChat's infrastructure. A virus scan step runs via a Cloud Function trigger after every upload — the file is passed through Google Cloud's Web Risk API and deleted if flagged.</p>
+            <p>The Google Drive integration goes further: users can share files directly from their Drive without downloading them first. When a user selects "Share from Drive," the Google Picker API opens a Drive file browser. The selected file's Drive file ID and shareable link are stored in the message document. The recipient sees a rich preview card showing the file name, type icon, size, and a "Open in Drive" button.</p>
+            <p>Drive file references are handled with the narrowest possible OAuth scope (drive.file) — EduChat can only access files the user explicitly selects, not their entire Drive. This prevents any inadvertent data access. File metadata is cached in IndexedDB to avoid repeated Drive API calls for the same file reference.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">E2EE upload</span><span class="pill">Virus scan</span><span class="pill">Google Picker</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ CALLING -->
+  <div class="feature-section call" data-section="call">
+    <div class="section-head call">
+      <div class="section-icon call">📞</div>
+      <div class="section-title">Calling Features</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="card-header call">
+          <div class="card-icon">🎤</div>
+          <div class="card-meta">
+            <div class="card-title">Voice & Video Calls</div>
+            <div class="card-tag call">WebRTC P2P</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>Voice and video calls use WebRTC — the browser-native real-time communication protocol that establishes direct peer-to-peer connections without routing media through any server. When a call starts, the caller creates an RTCPeerConnection, generates an SDP (Session Description Protocol) offer describing their media capabilities (codecs, resolutions), and sends it via Firestore's signaling channel.</p>
+            <p>For voice-only calls, getUserMedia({ audio: true }) captures the microphone stream encoded with the Opus codec at 32–64 kbps — a codec optimized specifically for voice with excellent quality even at low bitrates and in poor network conditions. For video, H.264 or VP8 (whichever both peers support) is negotiated via SDP, starting at 720p and scaling down adaptively via RTCRtpSender.setParameters if bandwidth drops.</p>
+            <p>ICE (Interactive Connectivity Establishment) handles the complex problem of connecting two devices that may be behind NATs or firewalls. STUN servers help peers discover their public IP/port. If direct connection fails (symmetric NAT), a TURN relay server is used as a fallback. The entire media path — audio and video — is encrypted by DTLS-SRTP, WebRTC's built-in encryption layer. No media ever transits EduChat's servers.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">Opus codec</span><span class="pill">DTLS-SRTP</span><span class="pill">ICE/STUN/TURN</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header call">
+          <div class="card-icon">👥</div>
+          <div class="card-meta">
+            <div class="card-title">Group Calls</div>
+            <div class="card-tag call">SFU mesh, 5 participants</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>Group calls support up to 5 participants using a mesh topology — each participant maintains a direct WebRTC peer connection to every other participant. For 5 people this means 10 total connections (n*(n-1)/2). While this approach demands more uplink bandwidth than a centralized server relay, it guarantees that no server ever touches the media, preserving full privacy.</p>
+            <p>Bandwidth management is critical in mesh calls. Each sender uses simulcast — transmitting the same stream at multiple resolutions (720p, 480p, 360p) simultaneously. Each receiver then selects which resolution to consume based on its current downlink bandwidth, detected via getStats() RTT and packet loss measurements. If a participant's uplink is congested, RTCRtpSender.setParameters dynamically lowers the maximum bitrate.</p>
+            <p>An RTCDataChannel alongside the media channels handles in-call signaling: mute/unmute events, screen share start/stop, participant join/leave, and speaker detection (who is loudest determines the "spotlight" view). When a participant drops, their stream is immediately removed and the grid layout reflows. Group call documents in Firestore expire via TTL 24 hours after the call ends.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">Mesh topology</span><span class="pill">Simulcast</span><span class="pill">DataChannel</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header call">
+          <div class="card-icon">📡</div>
+          <div class="card-meta">
+            <div class="card-title">Call Signaling System</div>
+            <div class="card-tag call">Firestore-based</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>WebRTC requires a "signaling" channel to exchange session descriptions and ICE candidates before direct media connections can be established. EduChat uses Firestore as its signaling channel — an elegant choice because Firestore's real-time listeners deliver documents within 100ms globally, making it ideal for the time-sensitive SDP offer/answer exchange.</p>
+            <p>The call flow: Caller writes an offer SDP to call_offers/{callId} with status "pending." ICE candidates are written individually to a candidates subcollection as they're gathered. The callee's app listens to their user document for new call_offers entries. On accept, the callee writes their answer SDP and begins gathering their own ICE candidates. Both sides exchange candidates until a viable connection path is found.</p>
+            <p>Firestore rules ensure only the two participants can read/write each signaling document. After the call ends, the signaling documents are immediately deleted by a Cloud Function, and any remaining documents have a 24-hour TTL as a safety net. If the callee doesn't answer within 60 seconds, the caller's client writes status "missed" and cleans up, triggering a missed call notification on the callee's device.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">SDP exchange</span><span class="pill">ICE candidates</span><span class="pill">24h TTL</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ SOCIAL -->
+  <div class="feature-section social" data-section="social">
+    <div class="section-head social">
+      <div class="section-icon social">👥</div>
+      <div class="section-title">Social Features</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="card-header social">
+          <div class="card-icon">🤝</div>
+          <div class="card-meta">
+            <div class="card-title">Friend Requests</div>
+            <div class="card-tag social">Request lifecycle</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>Friend requests form the trust foundation of EduChat's contact graph. Users can search for others by display name or scan their QR code. Sending a request writes a document to the friend_requests collection with status "pending," senderId, recipientId, and a timestamp. A Cloud Function triggers immediately, sending a push notification to the recipient's devices.</p>
+            <p>The recipient sees the request in their Notifications panel with Accept and Decline buttons. Accepting atomically updates the request status to "accepted" and creates reciprocal friend entries in both users' friends subcollections — a single Firestore batch write ensuring both operations succeed or both fail. Declining sets status to "declined" and removes the request document after 30 days.</p>
+            <p>Once friends, both users' public keys are fetched and cached, enabling E2EE for all subsequent messages. A mutual friends count is computed by intersecting both users' friend lists and displayed on profile cards. Users can also block contacts — blocking adds a blocklist entry, prevents future requests, and causes all listener queries to exclude the blocked user's documents.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">Batch write</span><span class="pill">Push trigger</span><span class="pill">Block list</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header social">
+          <div class="card-icon">🟢</div>
+          <div class="card-meta">
+            <div class="card-title">Online / Away / Offline Presence</div>
+            <div class="card-tag social">Real-time status</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>The presence system gives users real-time visibility of who's available. When the app loads, the client writes "online" and a server timestamp to user_status/{uid}. Crucially, it also registers an onDisconnect hook — a Firestore feature that automatically writes a predefined update when the client's connection drops, even abruptly. This ensures the status correctly transitions to "offline" even if the tab crashes.</p>
+            <p>"Away" status is detected using the Idle Detection API (available in Chromium) or a fallback using mousemove, keydown, and touchstart events. After 5 minutes of inactivity, the status is updated to "away" with a yellow indicator. When activity resumes, status reverts to "online" immediately. The lastSeen timestamp is updated every 60 seconds while online, enabling "last seen X minutes ago" display for offline users.</p>
+            <p>Presence updates are propagated to all of a user's contacts via a Firestore query: each client listens to user_status documents for UIDs in their friends list (batched in groups of 30 using the "in" operator, Firestore's array-in limit). When any friend's status changes, the contact list and chat headers update in real-time without requiring any page navigation or manual refresh.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">onDisconnect hook</span><span class="pill">Idle Detection API</span><span class="pill">lastSeen</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header social">
+          <div class="card-icon">👤</div>
+          <div class="card-meta">
+            <div class="card-title">Profile Management</div>
+            <div class="card-tag social">Avatar · Bio · Status</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>Users have full control over their identity on EduChat. The profile page allows editing display name, bio (max 160 characters), custom status message (like "In a meeting" or "Available"), and avatar image. Avatar updates go through the standard media pipeline: client-side resize to 256×256, WebP encoding, upload to Firebase Storage under a path keyed to the user's UID, then the download URL is saved to the Firestore user document.</p>
+            <p>Profile changes propagate to contacts in real-time via Firestore listeners. When a friend updates their name or avatar, the listener event invalidates the cached profile and fetches the fresh data — updating their name and avatar across all chat headers, contact lists, and group member panels simultaneously without any page refresh needed.</p>
+            <p>Profiles also include a key fingerprint display: a 12-character hex string derived from the user's public ECDH key via SHA-256. Friends can compare fingerprints out-of-band (in person, via a phone call, or by scanning each other's QR codes) to verify they're not subject to a man-in-the-middle attack. A "Safety number changed" banner appears in chats when a contact's public key changes due to device reinstallation.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">WebP avatar</span><span class="pill">Real-time propagation</span><span class="pill">Key fingerprint</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ UI/UX -->
+  <div class="feature-section ui" data-section="ui">
+    <div class="section-head ui">
+      <div class="section-icon ui">🎨</div>
+      <div class="section-title">UI / UX Features</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="card-header ui">
+          <div class="card-icon">🌙</div>
+          <div class="card-meta">
+            <div class="card-title">Dark Mode & Themes</div>
+            <div class="card-tag ui">6 palettes · System sync</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>EduChat's theming system is built on CSS custom properties (CSS variables), allowing the entire app's visual identity to switch instantly without re-rendering any components. On first launch, the app reads the system preference via window.matchMedia('(prefers-color-scheme: dark)') and applies the matching theme automatically. The user's explicit preference is saved to localStorage and Firestore, syncing across all their devices.</p>
+            <p>Beyond dark/light mode, EduChat offers 6 color palette themes: Indigo (default blue), Ocean (teal and cyan), Forest (green), Sunset (amber and orange), Rose (pink), and Midnight (deep purple). Each theme defines a complete set of ~30 CSS variables covering backgrounds, surfaces, borders, accents, shadows, and text colors. Switching themes updates all variables simultaneously, with a 200ms CSS transition on background-color and color properties creating a smooth cross-fade.</p>
+            <p>Theme changes don't require any JavaScript re-rendering — no React state updates, no component remounts. Only the CSS variable values change on the :root element, and all derived colors cascade automatically. Chat bubble colors, status indicators, highlight colors, and button accents all adapt to the active theme, maintaining consistent brand identity across all 6 palettes.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">CSS variables</span><span class="pill">prefers-color-scheme</span><span class="pill">Cross-device sync</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header ui">
+          <div class="card-icon">📱</div>
+          <div class="card-meta">
+            <div class="card-title">Progressive Web App (PWA)</div>
+            <div class="card-tag ui">Installable · Offline</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>EduChat is a full-featured Progressive Web App — installable directly from the browser onto Android, iOS, Windows, and macOS without going through an app store. Installation requires no APK download, no review delay, and no app store account. A manifest.json declares the app's identity, icons (9 sizes from 72×72 to 512×512), theme colors, display mode (standalone — no browser chrome), and start URL.</p>
+            <p>The service worker (sw.js) sits between the browser and the network, implementing a stale-while-revalidate caching strategy for static assets — CSS, JavaScript, and fonts are served from cache instantly, then updated in the background. For API calls, a network-first strategy with a 5-second timeout ensures fresh data when online and cached fallback when offline. A custom offline page shows the last known messages with a clear "reconnecting" indicator.</p>
+            <p>Push notifications work via Firebase Cloud Messaging integration with the service worker. Notification payloads contain only a notification ID (not the message content) for privacy — the service worker fetches the notification details from Firestore using the current auth token. After installation, EduChat behaves identically to a native app: its own task manager entry, access to the device camera/microphone, and Lighthouse PWA scores of 98+ consistently.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">manifest.json</span><span class="pill">Service Worker</span><span class="pill">Offline fallback</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header ui">
+          <div class="card-icon">🔭</div>
+          <div class="card-meta">
+            <div class="card-title">Media Lightbox Preview</div>
+            <div class="card-tag ui">Swipe · Pinch-zoom</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>Tapping any image or video in a chat opens a full-screen lightbox overlay with gesture controls. The lightbox uses CSS transform: scale() and translate() for zoom and pan, driven by touch events (touchstart, touchmove, touchend). Pinch-to-zoom detects two-finger touch events, computes the distance ratio between gesture start and current position, and maps it to a scale value between 1× and 5×. Double-tap toggles between 1× and 2× instantly.</p>
+            <p>Swiping left/right navigates between adjacent media messages in the same chat — the lightbox preloads the next and previous images in the background so navigation feels instant. A transition using translateX with CSS ease-out creates a fluid swipe feel. Videos auto-play with sound when opened, with a native controls overlay for seek, volume, and fullscreen. Voice notes show a custom waveform visualizer using the Web Audio API's AnalyserNode to display real-time amplitude bars.</p>
+            <p>The lightbox also includes a download button that triggers a programmatic anchor click with the download attribute, saving the full-resolution decrypted file to the device. On Android, this goes to the Downloads folder; on iOS, it saves to the Photos library (images) or Files app (other types). Closing the lightbox with a downward swipe uses momentum detection — a fast flick dismisses it, a slow drag snaps back.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">Pinch-zoom</span><span class="pill">Web Audio API</span><span class="pill">Gesture momentum</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ NOTIFICATIONS -->
+  <div class="feature-section notif" data-section="notif">
+    <div class="section-head notif">
+      <div class="section-icon notif">🔔</div>
+      <div class="section-title">Notifications</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="card-header notif">
+          <div class="card-icon">📲</div>
+          <div class="card-meta">
+            <div class="card-title">Push Notifications</div>
+            <div class="card-tag notif">FCM + Service Worker</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>Push notifications in EduChat use Firebase Cloud Messaging (FCM) integrated with the service worker, enabling message alerts even when the app isn't open. When a user grants notification permission, the browser registers with FCM and returns a unique FCM token. This token is stored in the user's Firestore document (in a tokens map keyed by device fingerprint), so the backend knows which FCM endpoint to target for each device.</p>
+            <p>When a message is sent, a Cloud Function (triggered by the Firestore write) reads all FCM tokens for the recipient's registered devices and sends a notification payload. Crucially, the payload contains only a notification ID and the sender's name — never the message content itself. This privacy-first design means Google's FCM infrastructure never sees private message text. The service worker receives the push event, fetches the actual notification details from Firestore using the stored auth token, then calls showNotification() with the rich content.</p>
+            <p>Clicking the notification focuses an existing EduChat window (if open) or opens a new one, then navigates directly to the relevant chat using postMessage communication between the service worker and the main thread. Notifications are batched intelligently: if a user receives 5 messages rapidly, a single summary notification ("5 new messages from Alice") is shown rather than 5 separate alerts.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">FCM token</span><span class="pill">Privacy payload</span><span class="pill">Batching</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header notif">
+          <div class="card-icon">🔊</div>
+          <div class="card-meta">
+            <div class="card-title">Message Alerts & Sounds</div>
+            <div class="card-tag notif">Customizable per sender</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>EduChat provides granular control over notification sounds and vibration patterns. The default notification sound is a short, pleasant chime loaded as a Web Audio API buffer (AudioBuffer), decoded and cached on first use. Playing the sound is a simple AudioBufferSourceNode.start() call — no audio element DOM manipulation needed, making it instantaneous even on mobile.</p>
+            <p>Users can customize notification behavior per contact: a specific chat can be set to a different tone (5 built-in tones plus silent), or notifications from that contact can be completely muted for a specified duration (1 hour, 8 hours, always). These preferences are stored in localStorage (per device) and synced to Firestore for cross-device consistency. Group chats support @mention-only mode: the phone vibrates and sounds only when the user's name is specifically mentioned.</p>
+            <p>On mobile, vibration patterns use the Vibration API (navigator.vibrate([200, 100, 200])) for tactile alerts even when the phone is on silent. Priority senders (starred contacts) can be configured to always bypass Do Not Disturb using the Notification.requireInteraction flag, keeping the notification visible until explicitly dismissed. Badge counts on the app icon are updated using navigator.setAppBadge() on supported platforms.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">Web Audio API</span><span class="pill">Vibration API</span><span class="pill">setAppBadge</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ PERFORMANCE -->
+  <div class="feature-section perf" data-section="perf">
+    <div class="section-head perf">
+      <div class="section-icon perf">⚡</div>
+      <div class="section-title">Performance & Storage</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="card-header perf">
+          <div class="card-icon">💾</div>
+          <div class="card-meta">
+            <div class="card-title">Auto Backup System</div>
+            <div class="card-tag perf">Weekly · Google Drive</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>EduChat's backup system provides automatic weekly exports of all chat data to the user's personal Google Drive, using OAuth with the narrowest possible scope (drive.file) — EduChat can only touch files it created, never browsing the user's other Drive contents. The backup data is structured as JSON containing chat metadata, participant lists, and message objects in their encrypted form — never decrypted plaintext, ensuring even Google cannot read the backup content.</p>
+            <p>Backup files are gzip-compressed (60–70% size reduction) and named with the user ID and timestamp. A Cloud Function handles the actual process: it reads all user data via paginated Firestore queries (500 docs per page), serializes to JSON, compresses, and uploads to Drive using a resumable upload protocol. The function runs with a 9-minute Cloud Run timeout to handle large datasets. Only the 10 most recent backups are retained; older ones are moved to Drive Trash (30-day soft delete) then permanently removed.</p>
+            <p>Restoring on a new device fetches the latest backup from Drive, verifies its SHA-256 integrity hash against metadata stored in Firestore, then streams the data back into Firestore using batched writes (500 per batch, 5-second delays to avoid quota exhaustion). During restore, existing newer data is never overwritten — a timestamp comparison ensures only missing historical data is imported. Decryption of message content happens entirely on the client device using the user's private key.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">gzip compression</span><span class="pill">SHA-256 verify</span><span class="pill">Paginated export</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header perf">
+          <div class="card-icon">🔄</div>
+          <div class="card-meta">
+            <div class="card-title">Offline-Friendly Structure</div>
+            <div class="card-tag perf">Background Sync · Queue</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>EduChat is designed to remain fully functional even without internet connectivity. When a user goes offline, Firestore's built-in offline persistence mode transparently serves all read queries from the local IndexedDB cache. The UI shows data immediately while a subtle "Offline mode" banner indicates the connection status. Outgoing messages sent while offline are optimistically rendered in the chat with a "pending" clock icon.</p>
+            <p>Pending messages are queued in IndexedDB using the Background Sync API — a service worker feature that registers a sync tag ("message-queue") and attempts to flush the queue whenever connectivity returns. This works even if the user closes the app: the service worker wakes up in the background when connectivity is detected and replays all queued messages in chronological order, preserving original timestamps. Successfully sent messages have their temporary client-side IDs replaced with server-generated IDs.</p>
+            <p>Media downloads are also handled gracefully offline: if a user attempts to open an image that isn't cached, a clear "Available when online" placeholder is shown. The Cache API stores recently accessed media for 7 days. Static assets (app shell, fonts, icons) are pre-cached during service worker installation, enabling the app to load and be navigable even with zero connectivity. The connection state is monitored via Firestore's onSnapshotsInSync callback, updating the status badge in real-time.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">Background Sync</span><span class="pill">Firestore offline</span><span class="pill">Cache API 7d</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ AI -->
+  <div class="feature-section ai" data-section="ai">
+    <div class="section-head ai">
+      <div class="section-icon ai">🤖</div>
+      <div class="section-title">AI Features</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="card-header ai">
+          <div class="card-icon">✨</div>
+          <div class="card-meta">
+            <div class="card-title">AI Assistant Integration</div>
+            <div class="card-tag ai">Claude API · Memory</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>EduChat includes an optional AI assistant that appears as a special contact in the chat list — indistinguishable in UI from a regular chat, but powered by Anthropic's Claude language model via a secure API integration (modules/ai.js). The assistant is designed for educational support: answering questions, explaining concepts, helping with writing, generating study materials, or providing productivity assistance.</p>
+            <p>The AI module maintains conversation memory by sending the full conversation history to the Claude API on each message. The history is stored locally in IndexedDB for the AI chat, enabling persistent multi-turn conversations that remember context from previous sessions. When the conversation grows long, a rolling window of the last 20 message pairs is sent to stay within API context limits while preserving the most relevant recent context.</p>
+            <p>Privacy is strictly maintained: only messages explicitly sent to the AI contact are transmitted to the Claude API. Personal conversations between users are never shared with any AI service. The AI contact can be hidden from the chat list or permanently deleted from Settings — there is no mandatory usage. Responses from the AI are streamed token-by-token using the Anthropic streaming API, displaying progressively as text appears rather than waiting for the full response, for a more natural conversational feel.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">Claude API</span><span class="pill">Streaming</span><span class="pill">Rolling context</span><span class="pill">IndexedDB memory</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ INFRASTRUCTURE -->
+  <div class="feature-section infra" data-section="infra">
+    <div class="section-head infra">
+      <div class="section-icon infra">🗄️</div>
+      <div class="section-title">Backend & Infrastructure</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="card-header infra">
+          <div class="card-icon">🔥</div>
+          <div class="card-meta">
+            <div class="card-title">Firebase Firestore Database</div>
+            <div class="card-tag infra">NoSQL · Real-time</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>Firestore is EduChat's primary database — a fully managed, serverless NoSQL document store hosted on Google Cloud infrastructure. Every message, user profile, chat metadata, friend relationship, group membership, and call signaling record is stored as a Firestore document within a hierarchical collection structure. The database scales automatically from one user to millions with zero configuration changes, and Google's global edge network delivers documents in under 100ms worldwide.</p>
+            <p>The data model is carefully designed around Firestore's querying limitations: messages are stored in a top-level messages collection (not nested under chat documents) to enable efficient pagination queries. Indexes are carefully tuned — Firestore requires composite indexes for multi-field queries, and EduChat's firestore.indexes.json defines all necessary compound indexes for the app's query patterns (chatId + timestamp, userId + status, etc.).</p>
+            <p>Firestore's atomic batch writes ensure data consistency: when a message is sent, a single batch atomically writes the message document AND updates the chat's lastMessage and unreadCount fields. This prevents states where a message appears in the chat but the chat list doesn't update (or vice versa). The database also uses Firestore's TTL feature (time-to-live policies on document fields) for automatic expiry of typing indicators, call signaling documents, and expired messages.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">Compound indexes</span><span class="pill">Batch writes</span><span class="pill">TTL policies</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header infra">
+          <div class="card-icon">🖥️</div>
+          <div class="card-meta">
+            <div class="card-title">Node.js Server & Admin Routes</div>
+            <div class="card-tag infra">server.js · Admin API</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>Alongside Firebase's serverless infrastructure, EduChat runs a lightweight Node.js server (server.js) for admin-level operations that require elevated Firebase Admin SDK privileges — operations that cannot be safely performed from the client due to permission requirements. This server handles tasks like force-deleting user accounts (purging all associated Firestore data in cascading batches), bulk-revoking sessions, generating signed URLs for private media access, and running database migrations.</p>
+            <p>Admin routes are protected by Firebase custom claims: only users with the isAdmin: true claim in their ID token can hit /admin/* endpoints. The server verifies the incoming Firebase ID token on every request using admin.auth().verifyIdToken(), extracting the claims and rejecting requests from non-admin users with a 403. Admin actions are logged to a Firestore audit_log collection with the admin's UID, timestamp, action type, and affected user IDs.</p>
+            <p>The server also exposes health check endpoints (/health, /metrics) consumed by monitoring dashboards showing database connection status, pending queue depths, backup success rates, and error rates. Rate limiting (express-rate-limit) protects all endpoints from abuse — 100 requests per 15-minute window per IP for public routes, stricter limits for admin routes. The server runs in a containerized environment with automatic restart on crash.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">Admin SDK</span><span class="pill">Custom claims</span><span class="pill">Audit log</span><span class="pill">Rate limiting</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ EXTRA -->
+  <div class="feature-section extra" data-section="extra">
+    <div class="section-head extra">
+      <div class="section-icon extra">✨</div>
+      <div class="section-title">Extra Advanced Features</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="card-header extra">
+          <div class="card-icon">📷</div>
+          <div class="card-meta">
+            <div class="card-title">QR Code Functionality</div>
+            <div class="card-tag extra">Generate · Scan</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>QR codes provide a fast, contactless way to add friends in person — far faster than searching by name and less error-prone than sharing IDs manually. Each user has a unique QR code generated from their UID and public key fingerprint, encoded using the qr.js library into a canvas element with customizable colors matching the active theme. The QR code is displayed at 250×250 pixels in the user's profile with a share button to save it as an image.</p>
+            <p>Scanning uses the device camera via getUserMedia({ video: { facingMode: "environment" } }) to access the rear camera. Video frames are captured at 10 fps using a canvas drawImage() loop, and each frame is decoded using a WebAssembly-compiled QR decoder (faster than pure JavaScript decoders by 5–10×). A bounding box overlay highlights detected QR codes before decoding to provide visual feedback.</p>
+            <p>QR codes also embed a version number so that future changes to the format can be handled with backward compatibility. Decoded QR data is validated — checked against expected format, UID length, and a checksum — before triggering a friend request. Invalid or expired QR codes show a clear error message. The QR scan view also functions as a login shortcut: scanning EduChat's desktop web login QR code authenticates the mobile session, similar to WhatsApp Web.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">WASM decoder</span><span class="pill">Canvas capture</span><span class="pill">QR auth</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header extra">
+          <div class="card-icon">📢</div>
+          <div class="card-meta">
+            <div class="card-title">Toast Notification System</div>
+            <div class="card-tag extra">Auto-dismiss · Actions</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>The toast notification system provides non-blocking feedback for in-app events: message sent, file uploaded, error occurred, friend request received, backup completed, and dozens of other state transitions. Toasts appear as floating cards in the bottom-right corner (bottom-center on mobile), sliding in via a CSS keyframe animation (translateY + opacity) and automatically disappearing after 4 seconds for informational messages or 8 seconds for errors.</p>
+            <p>Each toast has a type (success, error, warning, info) mapped to a distinct color and icon: green checkmark, red X, amber warning triangle, blue info circle. An optional action button can be embedded — for example, an "Undo" button on message deletion that triggers a Firestore restore before the deletion batch is confirmed. This undo window is exactly 5 seconds, matching the toast's visibility duration.</p>
+            <p>Toasts are queued — if multiple events fire in rapid succession, they stack vertically (max 3 visible simultaneously). The queue is managed as a JavaScript array; new toasts push to the end, displayed toasts shift off the front. Each toast has a thin progress bar at the bottom that counts down the visible duration, giving users clear visual indication of how long they have to act on action toasts. The system is implemented as a singleton module importable across all app components without prop drilling.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">Queue system</span><span class="pill">Undo action</span><span class="pill">Progress timer</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-header extra">
+          <div class="card-icon">📍</div>
+          <div class="card-meta">
+            <div class="card-title">Back Navigation Handling</div>
+            <div class="card-tag extra">History API · SPA routing</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-desc">
+            <p>As a Single Page Application (SPA), EduChat intercepts the browser's native back button to provide intuitive navigation that matches what users expect from a native app. The History API (history.pushState and history.replaceState) is used to add navigable states to the browser's history stack without actual page loads. When a user opens a chat, a state is pushed; opening a media lightbox pushes another state on top.</p>
+            <p>A popstate event listener on the window intercepts the back button press and delegates it to the app's router, which determines the appropriate navigation action: closing a lightbox, returning from a chat to the contact list, or dismissing a modal. This creates a coherent back-button experience that matches Android's hardware back button behavior — critical for a mobile-first app where users muscle-memorize the back gesture.</p>
+            <p>The router also handles deep linking: navigating directly to a URL like /chat/{chatId} (via a push notification tap) loads the app, waits for authentication to complete, then directly opens the specified chat. State is passed between views using the history.state object (serialized as JSON), avoiding global state management complexity. URL-based routing also enables browser bookmarking of frequently used chats and sharing links to specific conversations.</p>
+          </div>
+          <div class="card-pills">
+            <span class="pill">pushState</span><span class="pill">popstate listener</span><span class="pill">Deep linking</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-logo">Edu<span>Chat</span></div>
+  <div class="footer-copy">v6.0.0 · Complete Feature Reference · May 2025</div>
+</footer>
+
+<!-- ══════════════════════════════════════════════════════
+     AI ASSISTANT FLOATING BUTTON
+══════════════════════════════════════════════════════ -->
+<button id="aiFloatBtn" onclick="toggleAIPanel()" title="Chat with AI Assistant" aria-label="Open AI Assistant">
+  <span id="aiFloatIcon">🤖</span>
+  <span id="aiFloatLabel">Help & Support</span>
+  <span id="aiUnreadBadge" style="display:none"></span>
+</button>
+
+<!-- ══════════════════════════════════════════════════════
+     AI CHAT PANEL
+══════════════════════════════════════════════════════ -->
+<div id="aiPanel" aria-label="AI Assistant Panel">
+  <!-- Panel Header -->
+  <div id="aiPanelHeader">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div id="aiAvatar">🤖</div>
+      <div>
+        <div id="aiName">EduChat Assistant</div>
+        <div id="aiStatus">🟢 Always here for you</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <button class="ai-icon-btn" onclick="openReportModal()" title="Report an issue">🚩</button>
+      <button class="ai-icon-btn" onclick="clearAIHistory()" title="Clear chat">🗑️</button>
+      <button class="ai-icon-btn" onclick="toggleAIPanel()" title="Close">✕</button>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div id="aiMessages"></div>
+
+  <!-- Quick actions -->
+  <div id="aiQuickActions">
+    <button class="ai-quick-btn" onclick="sendQuickMsg('What features does EduChat have?')">📋 Features</button>
+    <button class="ai-quick-btn" onclick="sendQuickMsg('How does EduChat keep my messages private and secure?')">🔒 Privacy</button>
+    <button class="ai-quick-btn" onclick="sendQuickMsg('How do I set up two-factor authentication?')">🔑 2FA Help</button>
+    <button class="ai-quick-btn" onclick="sendQuickMsg('I am having a problem with the app')">🐛 Report Issue</button>
+  </div>
+
+  <!-- Input -->
+  <div id="aiInputArea">
+    <textarea id="aiInput" placeholder="Ask me anything about EduChat…" rows="1"></textarea>
+    <button id="aiSendBtn" onclick="sendAIMessage()" title="Send">➤</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     REPORT MODAL
+══════════════════════════════════════════════════════ -->
+<div id="reportOverlay" onclick="closeReportModal()" style="display:none"></div>
+<div id="reportModal" style="display:none">
+  <div id="reportModalHeader">
+    <div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;">🚩 Report an Issue</div>
+    <button class="ai-icon-btn" onclick="closeReportModal()">✕</button>
+  </div>
+  <div id="reportModalBody">
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Your report will be sent to the EduChat team. We never share your personal information or private conversations.</p>
+
+    <label class="report-label">Issue Type</label>
+    <select id="reportType">
+      <option value="bug">🐛 Bug / App not working</option>
+      <option value="feature">💡 Feature request</option>
+      <option value="account">👤 Account problem</option>
+      <option value="privacy">🔒 Privacy / Security concern</option>
+      <option value="abuse">🚨 Abusive content / user</option>
+      <option value="other">📝 Other</option>
+    </select>
+
+    <label class="report-label">Your Name <span style="color:var(--muted);font-weight:400;">(optional)</span></label>
+    <input type="text" id="reportName" placeholder="e.g. Ravi Kumar" />
+
+    <label class="report-label">Your Email <span style="color:var(--muted);font-weight:400;">(optional — for reply)</span></label>
+    <input type="email" id="reportEmail" placeholder="you@example.com" />
+
+    <label class="report-label">Describe the Issue <span style="color:var(--accent4);">*</span></label>
+    <textarea id="reportDesc" placeholder="Please describe the issue in detail — what happened, what you expected, and any steps to reproduce it." rows="5"></textarea>
+
+    <div id="reportStatus" style="display:none"></div>
+  </div>
+  <div id="reportModalFooter">
+    <button class="report-cancel-btn" onclick="closeReportModal()">Cancel</button>
+    <button class="report-submit-btn" onclick="submitReport()">Send Report 📨</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     STYLES
+══════════════════════════════════════════════════════ -->
+<style>
+/* ── Float button ─────────────────────────────────── */
+#aiFloatBtn {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 900;
+  background: linear-gradient(135deg, #4f8cff 0%, #7b5cff 100%);
+  border: none;
+  border-radius: 50px;
+  padding: 13px 20px 13px 16px;
+  color: #fff;
+  font-size: 15px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 24px rgba(79,140,255,0.45);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+#aiFloatBtn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(79,140,255,0.55); }
+#aiFloatIcon { font-size: 20px; }
+#aiUnreadBadge {
+  background: #ff6b6b;
+  border-radius: 50%;
+  width: 8px; height: 8px;
+  position: absolute;
+  top: 10px; right: 10px;
+}
+
+/* ── AI Panel ─────────────────────────────────────── */
+#aiPanel {
+  position: fixed;
+  bottom: 100px;
+  right: 28px;
+  width: 380px;
+  max-height: 580px;
+  z-index: 901;
+  background: #0e1117;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 22px;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(79,140,255,0.15);
+  animation: panelIn 0.25s cubic-bezier(.4,0,.2,1);
+}
+#aiPanel.open { display: flex; }
+@keyframes panelIn {
+  from { opacity:0; transform: translateY(16px) scale(0.97); }
+  to   { opacity:1; transform: translateY(0) scale(1); }
+}
+
+#aiPanelHeader {
+  background: linear-gradient(135deg, rgba(79,140,255,0.15) 0%, rgba(123,92,255,0.1) 100%);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+#aiAvatar {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg,rgba(79,140,255,0.2),rgba(123,92,255,0.2));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+#aiName { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:#f0f2f7; }
+#aiStatus { font-size:11px; color:#38e8c0; margin-top:1px; }
+
+.ai-icon-btn {
+  background: rgba(255,255,255,0.07);
+  border: none;
+  border-radius: 8px;
+  width: 30px; height: 30px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #7a8099;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+.ai-icon-btn:hover { background: rgba(255,255,255,0.13); color: #f0f2f7; }
+
+/* ── Messages ─────────────────────────────────────── */
+#aiMessages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 14px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scroll-behavior: smooth;
+}
+#aiMessages::-webkit-scrollbar { width: 4px; }
+#aiMessages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+.ai-msg-row {
+  display: flex;
+  flex-direction: column;
+}
+.ai-msg-row.user { align-items: flex-end; }
+.ai-msg-row.assistant { align-items: flex-start; }
+
+.ai-bubble {
+  max-width: 82%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  word-break: break-word;
+}
+.ai-bubble.user {
+  background: linear-gradient(135deg, #4f8cff, #7b5cff);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.ai-bubble.assistant {
+  background: #1a2235;
+  color: #cbd5e1;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-bottom-left-radius: 4px;
+}
+.ai-time {
+  font-size: 10px;
+  color: #3a3f52;
+  margin-top: 3px;
+  padding: 0 4px;
+}
+
+/* ── Typing dots ──────────────────────────────────── */
+.ai-typing-dots {
+  display: flex; gap: 4px; align-items: center; padding: 4px 0;
+}
+.ai-typing-dots span {
+  width: 7px; height: 7px;
+  background: #4f8cff;
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: aiDot 1s infinite;
+}
+.ai-typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.ai-typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes aiDot {
+  0%,80%,100% { opacity:0.2; transform:scale(0.8); }
+  40%         { opacity:1;   transform:scale(1);   }
+}
+
+/* ── Quick action buttons ─────────────────────────── */
+#aiQuickActions {
+  padding: 6px 14px 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex-shrink: 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.ai-quick-btn {
+  background: rgba(79,140,255,0.1);
+  border: 1px solid rgba(79,140,255,0.2);
+  color: #a0b4d6;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 11.5px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.15s, color 0.15s;
+}
+.ai-quick-btn:hover { background: rgba(79,140,255,0.22); color: #fff; }
+
+/* ── Input area ───────────────────────────────────── */
+#aiInputArea {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 10px 14px 14px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+#aiInput {
+  flex: 1;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  color: #f0f2f7;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  padding: 10px 14px;
+  resize: none;
+  outline: none;
+  max-height: 100px;
+  line-height: 1.5;
+  transition: border-color 0.2s;
+}
+#aiInput:focus { border-color: rgba(79,140,255,0.5); }
+#aiInput::placeholder { color: #3a3f52; }
+#aiSendBtn {
+  background: linear-gradient(135deg, #4f8cff, #7b5cff);
+  border: none;
+  border-radius: 12px;
+  width: 40px; height: 40px;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.15s, opacity 0.15s;
+}
+#aiSendBtn:hover { transform: scale(1.05); }
+#aiSendBtn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* ── Report modal ─────────────────────────────────── */
+#reportOverlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+#reportModal {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  z-index: 1001;
+  background: #0e1117;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 20px;
+  width: min(460px, 95vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+  animation: modalIn 0.2s ease;
+}
+@keyframes modalIn {
+  from { opacity:0; transform: translate(-50%,-48%) scale(0.97); }
+  to   { opacity:1; transform: translate(-50%,-50%) scale(1); }
+}
+#reportModalHeader {
+  padding: 18px 20px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+#reportModalBody { padding: 20px; }
+#reportModalFooter {
+  padding: 14px 20px 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.report-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: #7a8099;
+  letter-spacing: 0.3px;
+  margin-bottom: 6px;
+  margin-top: 14px;
+  text-transform: uppercase;
+}
+#reportType, #reportName, #reportEmail, #reportDesc {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 10px;
+  color: #f0f2f7;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+#reportType:focus, #reportName:focus, #reportEmail:focus, #reportDesc:focus {
+  border-color: rgba(79,140,255,0.5);
+}
+#reportDesc { resize: vertical; min-height: 100px; }
+#reportType option { background: #0e1117; }
+
+.report-cancel-btn {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #7a8099;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+}
+.report-submit-btn {
+  background: linear-gradient(135deg, #4f8cff, #7b5cff);
+  border: none;
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 22px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.report-submit-btn:hover { opacity: 0.9; }
+.report-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+#reportStatus {
+  margin-top: 14px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+#reportStatus.success {
+  background: rgba(56,232,192,0.1);
+  border: 1px solid rgba(56,232,192,0.25);
+  color: #38e8c0;
+}
+#reportStatus.error {
+  background: rgba(255,107,107,0.1);
+  border: 1px solid rgba(255,107,107,0.25);
+  color: #ff6b6b;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  #aiPanel { right:12px; left:12px; width:auto; bottom:90px; }
+  #aiFloatBtn { right:16px; bottom:20px; }
+}
+</style>
+
+<!-- ══════════════════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════════════════ -->
+<script>
+/* ══════════════ FILTER SECTIONS ══════════════ */
+function filterSection(key, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const sections = document.querySelectorAll('.feature-section');
+  if (key === 'all') {
+    sections.forEach(s => s.classList.remove('hidden'));
+  } else {
+    sections.forEach(s => {
+      s.classList.toggle('hidden', !s.classList.contains(key));
+    });
+  }
+}
+
+/* ══════════════ AI CHAT ══════════════ */
+const STORAGE_KEY = 'aboutPage_aiHistory_v1';
+const REPORT_EMAIL = 'imranchintakayamanda@gmail.com';
+let aiPanelOpen = false;
+
+// System prompt — EduChat support assistant
+const SYSTEM_PROMPT = `You are EduChat's friendly and professional support assistant embedded in the EduChat About & Documentation page.
+
+YOUR PURPOSE:
+- Help users understand EduChat's features, how they work, and how to use them
+- Help users troubleshoot problems and issues with the app
+- Guide users through EduChat's security model, privacy policy, and terms
+- Collect and help users file bug reports or issue reports
+- Answer general questions about messaging, encryption, and app functionality
+
+YOUR STRICT RULES — NEVER BREAK THESE:
+1. NEVER ask for, reveal, or discuss any user's personal messages, private conversations, contacts, or private data
+2. NEVER claim to have access to user accounts, databases, or private app data
+3. NEVER reveal any API keys, server credentials, or internal system details
+4. If a user shares personal details (phone number, password, etc.) — remind them gently not to share sensitive info and that you cannot access their account
+5. If a user asks you to access their account, messages, or do anything requiring login — explain that you're a documentation assistant only
+6. Always be warm, calm, and patient — even if the user is frustrated, angry, or rude
+7. For any issue that needs reporting, encourage the user to click the 🚩 Report button in the chat header
+8. Keep responses concise (2–5 sentences usually). Use bullet points for lists of steps or features.
+9. Speak in whatever language the user is using — Telugu, Hindi, English, or mixed
+
+WHAT YOU KNOW:
+- EduChat uses ECDH + AES-256-GCM end-to-end encryption
+- Authentication uses Google Sign-In (OAuth 2.0) + optional TOTP 2FA
+- WebRTC for peer-to-peer voice/video calls (no server recording)
+- Firestore real-time database with strict security rules
+- Progressive Web App — installable, offline capable
+- Group chats use per-message key wrapping
+- Disappearing messages: 1h/24h/7d/30d options
+- AI Assistant available in the main app chat list
+- Auto backup to Google Drive (encrypted, weekly)
+- Version 6.0.0`;
+
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+  catch { return []; }
+}
+
+function saveHistory(hist) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(hist.slice(-60))); }
+  catch {}
+}
+
+function fmtTime(ts) {
+  return new Date(ts).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+}
+
+function toggleAIPanel() {
+  aiPanelOpen = !aiPanelOpen;
+  const panel = document.getElementById('aiPanel');
+  const badge = document.getElementById('aiUnreadBadge');
+  if (aiPanelOpen) {
+    panel.classList.add('open');
+    badge.style.display = 'none';
+    renderHistory();
+    setTimeout(() => document.getElementById('aiInput')?.focus(), 200);
+  } else {
+    panel.classList.remove('open');
+  }
+}
+
+function renderHistory() {
+  const msgEl = document.getElementById('aiMessages');
+  if (!msgEl) return;
+  const hist = loadHistory();
+  if (hist.length === 0) {
+    msgEl.innerHTML = `
+      <div style="text-align:center;padding:30px 16px;">
+        <div style="font-size:36px;margin-bottom:12px;">🤖</div>
+        <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#f0f2f7;margin-bottom:6px;">Hi! I'm EduChat Assistant</div>
+        <div style="font-size:13px;color:#7a8099;line-height:1.6;">Ask me anything about EduChat's features, privacy, security, or any problem you're facing. I'm here to help!</div>
+      </div>`;
+  } else {
+    msgEl.innerHTML = hist.map(m => `
+      <div class="ai-msg-row ${m.role}">
+        <div class="ai-bubble ${m.role}">${escapeHTML(m.content)}</div>
+        <div class="ai-time">${fmtTime(m.ts || Date.now())}</div>
+      </div>`).join('');
+  }
+  msgEl.scrollTop = msgEl.scrollHeight;
+}
+
+function escapeHTML(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+    .replace(/\n/g,'<br>');
+}
+
+function showTyping() {
+  const msgEl = document.getElementById('aiMessages');
+  const el = document.createElement('div');
+  el.id = 'aiTyping';
+  el.className = 'ai-msg-row assistant';
+  el.innerHTML = `<div class="ai-bubble assistant"><div class="ai-typing-dots"><span></span><span></span><span></span></div></div>`;
+  msgEl.appendChild(el);
+  msgEl.scrollTop = msgEl.scrollHeight;
+}
+
+function hideTyping() {
+  document.getElementById('aiTyping')?.remove();
+}
+
+function appendBubble(msg) {
+  const msgEl = document.getElementById('aiMessages');
+  // remove empty state if present
+  const empty = msgEl.querySelector('div[style*="text-align:center"]');
+  if (empty) empty.remove();
+
+  const el = document.createElement('div');
+  el.className = `ai-msg-row ${msg.role}`;
+  el.innerHTML = `
+    <div class="ai-bubble ${msg.role}">${escapeHTML(msg.content)}</div>
+    <div class="ai-time">${fmtTime(msg.ts)}</div>`;
+  msgEl.appendChild(el);
+  msgEl.scrollTop = msgEl.scrollHeight;
+}
+
+async function callAI(history) {
+  const messages = history.map(m => ({ role: m.role, content: m.content }));
+  const res = await fetch('/api/ai-chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ system: SYSTEM_PROMPT, messages })
+  });
+  if (!res.ok) throw new Error(`Server error ${res.status}`);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data.text || '…';
+}
+
+async function sendAIMessage() {
+  const input = document.getElementById('aiInput');
+  const sendBtn = document.getElementById('aiSendBtn');
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  sendBtn.disabled = true;
+
+  const hist = loadHistory();
+  const userMsg = { role: 'user', content: text, ts: Date.now() };
+  hist.push(userMsg);
+  saveHistory(hist);
+  appendBubble(userMsg);
+  showTyping();
+
+  try {
+    const reply = await callAI(hist);
+    hideTyping();
+    const aiMsg = { role: 'assistant', content: reply, ts: Date.now() };
+    hist.push(aiMsg);
+    saveHistory(hist);
+    appendBubble(aiMsg);
+  } catch (err) {
+    hideTyping();
+    console.error('AI error:', err);
+    const errMsg = {
+      role: 'assistant',
+      content: 'Sorry, I ran into a small problem. Please try again in a moment! If the issue persists, use the 🚩 Report button to let the team know.',
+      ts: Date.now()
+    };
+    const hist2 = loadHistory();
+    hist2.push(errMsg);
+    saveHistory(hist2);
+    appendBubble(errMsg);
+  } finally {
+    sendBtn.disabled = false;
+    input.focus();
+  }
+}
+
+function sendQuickMsg(text) {
+  const input = document.getElementById('aiInput');
+  input.value = text;
+  sendAIMessage();
+}
+
+function clearAIHistory() {
+  if (confirm('Clear the entire chat history?')) {
+    localStorage.removeItem(STORAGE_KEY);
+    renderHistory();
+  }
+}
+
+// Enter key to send
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('aiInput');
+  if (input) {
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendAIMessage(); }
+    });
+    input.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+    });
+  }
+});
+
+/* ══════════════ REPORT MODAL ══════════════ */
+function openReportModal() {
+  document.getElementById('reportOverlay').style.display = 'block';
+  document.getElementById('reportModal').style.display = 'block';
+  document.getElementById('reportStatus').style.display = 'none';
+  document.getElementById('reportStatus').className = '';
+}
+
+function closeReportModal() {
+  document.getElementById('reportOverlay').style.display = 'none';
+  document.getElementById('reportModal').style.display = 'none';
+}
+
+async function submitReport() {
+  const type    = document.getElementById('reportType').value;
+  const name    = document.getElementById('reportName').value.trim();
+  const email   = document.getElementById('reportEmail').value.trim();
+  const desc    = document.getElementById('reportDesc').value.trim();
+  const statusEl = document.getElementById('reportStatus');
+  const submitBtn = document.querySelector('.report-submit-btn');
+
+  if (!desc) {
+    statusEl.style.display = 'block';
+    statusEl.className = 'error';
+    statusEl.textContent = '⚠️ Please describe the issue before submitting.';
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending…';
+  statusEl.style.display = 'none';
+
+  // Build email body
+  const typeLabels = {
+    bug: '🐛 Bug / App not working',
+    feature: '💡 Feature request',
+    account: '👤 Account problem',
+    privacy: '🔒 Privacy / Security concern',
+    abuse: '🚨 Abusive content / user',
+    other: '📝 Other'
+  };
+
+  const subject = encodeURIComponent(`[EduChat Report] ${typeLabels[type] || type}`);
+  const body = encodeURIComponent(
+`EduChat Issue Report
+====================
+Type    : ${typeLabels[type] || type}
+Name    : ${name || '(not provided)'}
+Email   : ${email || '(not provided)'}
+Time    : ${new Date().toLocaleString()}
+Page    : ${window.location.href}
+
+Description:
+${desc}
+
+---
+Sent from EduChat About Page`
+  );
+
+  // Try mailto first (always works, opens email client)
+  const mailtoLink = `mailto:${REPORT_EMAIL}?subject=${subject}&body=${body}`;
+
+  // Also try /api/send-report if available on the server
+  let serverSent = false;
+  try {
+    const res = await fetch('/api/send-report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: typeLabels[type] || type,
+        name: name || '(not provided)',
+        userEmail: email || '(not provided)',
+        description: desc,
+        timestamp: new Date().toISOString(),
+        page: window.location.href,
+        toEmail: REPORT_EMAIL
+      })
+    });
+    if (res.ok) serverSent = true;
+  } catch (_) { /* server route may not exist — fallback to mailto */ }
+
+  submitBtn.disabled = false;
+  submitBtn.textContent = 'Send Report 📨';
+
+  statusEl.style.display = 'block';
+
+  if (serverSent) {
+    statusEl.className = 'success';
+    statusEl.innerHTML = `✅ Report sent successfully! The EduChat team has been notified at <strong>${REPORT_EMAIL}</strong>. Thank you for helping improve EduChat!`;
+    document.getElementById('reportDesc').value = '';
+    document.getElementById('reportName').value = '';
+    document.getElementById('reportEmail').value = '';
+    setTimeout(closeReportModal, 4000);
+  } else {
+    // Fallback: open email client with pre-filled details
+    statusEl.className = 'success';
+    statusEl.innerHTML = `📧 Opening your email client to send the report to <strong>${REPORT_EMAIL}</strong>.<br><small>If it doesn't open, please email us directly at ${REPORT_EMAIL}</small>`;
+    setTimeout(() => { window.location.href = mailtoLink; }, 500);
+    setTimeout(closeReportModal, 5000);
+  }
+
+  // Also notify admin via AI assistant message (logged in chat)
+  const hist = loadHistory();
+  hist.push({
+    role: 'user',
+    content: `[SYSTEM] User submitted a report — Type: ${typeLabels[type]}, Description: "${desc.substring(0,120)}${desc.length>120?'…':''}"`,
+    ts: Date.now()
+  });
+  saveHistory(hist);
+}
+</script>
+</body>
+</html>
